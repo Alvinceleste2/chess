@@ -1,5 +1,6 @@
 package chess;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -28,13 +29,13 @@ public class Chess {
     mainFrame.setSize(new Dimension(576, 576));
     mainFrame.setVisible(true);
 
-    try {
-      Thread.sleep(5000);
-    } catch (Exception e) {
+    wait(2000);
 
-    }
+  }
 
+  public synchronized void test() {
     board.getPieceAtSquare(new Position(3, 1)).move(new Position(3, 3));
     tablePanel.refresh();
+
   }
 }

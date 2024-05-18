@@ -4,32 +4,31 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-public class TablePanel extends JPanel {
-  private static final double ASPECT_RATIO = 1.0 / 1.0;
-  private BufferedImage backgroundImage;
-  private TilesPanel tilesPanel;
+import jdk.jshell.SourceCodeAnalysis.Highlight;
 
-  public TablePanel() {
+public class Tile extends JPanel {
+  private BufferedImage backgroundImage;
+  private int x, y;
+
+  public Tile(String imagePath, int x, int y) {
     try {
-      backgroundImage = ImageIO.read(new File("./../assets/ChessSet/Classic/Board/Board-classic2.png"));
+      backgroundImage = ImageIO.read(new File(imagePath));
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-    this.tilesPanel = new TilesPanel();
-    this.add(Box.createHorizontalGlue());
-    this.add(tilesPanel);
-    this.add(Box.createHorizontalGlue());
+    this.setOpaque(false);
+    this.x = x;
+    this.y = y;
 
     this.addComponentListener(new ComponentAdapter() {
       @Override
@@ -37,24 +36,13 @@ public class TablePanel extends JPanel {
         enforceAspectRatio();
       }
     });
-  }
 
-  private void enforceAspectRatio() {
-    int width = getWidth();
-    int height = getHeight();
-
-    // Calculate the expected height based on the width and aspect ratio
-    int expectedHeight = (int) (width / ASPECT_RATIO);
-    int expectedWidth = (int) (height / ASPECT_RATIO);
-
-    // If the calculated height is different from the actual height, set the new
-    // height
-
-    if (expectedWidth < expectedHeight) {
-      setSize(expectedWidth, height);
-    } else {
-      setSize(width, expectedHeight);
-    }
+    this.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        JPanel panel = (JPanel) e.getSource();
+      }
+    });
   }
 
   @Override
@@ -77,11 +65,13 @@ public class TablePanel extends JPanel {
       int y = (panelHeight - scaledHeight) / 2;
 
       g.drawImage(backgroundImage, x, y, scaledWidth, scaledHeight, this);
-      this.setBackground(Color.RED);
+      this.enforceAspectRatio();
     }
   }
 
-  public void refresh() {
-    this.tilesPanel.refresh();
+  private void enforceAspectRatio() {
+    System.out.println(this.getParent());
+    System.out.println(this);
+    this.setSize(this.getParent().getWidth() / 9, this.getParent().getHeight() / 9);
   }
 }
