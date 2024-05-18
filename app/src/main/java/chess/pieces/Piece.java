@@ -12,6 +12,7 @@ public abstract class Piece {
   protected boolean dead;
   protected List<Position> movements;
   protected Color color;
+  protected String imagePath;
 
   public Piece(Color color) {
     this.color = color;
@@ -26,6 +27,10 @@ public abstract class Piece {
 
   public void setPosition(Position position) {
     this.position = position;
+  }
+
+  public String getImagePath() {
+    return this.imagePath;
   }
 
   public abstract void move(Position position) throws InvalidMovementException;

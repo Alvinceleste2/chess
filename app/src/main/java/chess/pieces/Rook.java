@@ -12,6 +12,7 @@ import chess.utils.Position;
 public class Rook extends Piece {
   public Rook(Color color) {
     super(color);
+    this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Rook.png";
   }
 
   @Override

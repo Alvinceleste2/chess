@@ -1,20 +1,29 @@
 package chess;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+import chess.exceptions.InvalidPositionException;
+import chess.exceptions.InvalidPositionToAddPieceException;
+import chess.ui.view.TablePanel;
+
 public class Chess {
-  private static Chess single_instance = null;
+  public static void main(String[] args) throws InvalidPositionException, InvalidPositionToAddPieceException {
+    System.out.println("Hello, World");
 
-  private Chess() {
-  }
+    Board board = Board.getInstance();
+    board.boardInit();
 
-  public Chess getInstance() {
-    if (single_instance == null) {
-      single_instance = new Chess();
-    }
+    JFrame mainFrame = new JFrame();
+    mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    return single_instance;
-  }
+    mainFrame.setLayout(new BorderLayout());
+    mainFrame.add(new TablePanel(), BorderLayout.CENTER);
 
-  public static void main(String[] args) {
-    System.out.println("Hello, World!");
+    mainFrame.setSize(new Dimension(288, 288));
+    mainFrame.setResizable(false);
+    mainFrame.setVisible(true);
   }
 }

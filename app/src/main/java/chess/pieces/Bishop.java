@@ -12,6 +12,7 @@ import chess.utils.Position;
 public class Bishop extends Piece {
   public Bishop(Color color) {
     super(color);
+    this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Bishop.png";
   }
 
   @Override
