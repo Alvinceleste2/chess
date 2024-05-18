@@ -14,7 +14,14 @@ public class Pawn extends Piece {
 
   public Pawn(Color color) {
     super(color);
-    this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Pawn.png";
+    switch (color) {
+      case WHITE:
+        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Pawn.png";
+        break;
+      default:
+        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-black-classic/Pawn.png";
+        break;
+    }
   }
 
   @Override

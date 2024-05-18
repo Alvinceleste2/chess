@@ -12,7 +12,14 @@ import chess.utils.Position;
 public class Queen extends Piece {
   public Queen(Color color) {
     super(color);
-    this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Queen.png";
+    switch (color) {
+      case WHITE:
+        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Queen.png";
+        break;
+      default:
+        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-black-classic/Queen.png";
+        break;
+    }
   }
 
   @Override
