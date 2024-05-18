@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.List;
+
 import chess.exceptions.InvalidPositionToAddPieceException;
 import chess.pieces.Piece;
 import chess.utils.Position;
@@ -9,6 +11,7 @@ public class Board {
   private static Board boardInstance = null;
 
   private Square[][] squares;
+  private List<Piece> pieces;
 
   private Board() {
     this.squares = new Square[maxX][maxY];
@@ -46,5 +49,14 @@ public class Board {
 
     this.squares[position.x][position.y].changePiece(piece);
     piece.setPosition(position);
+    this.pieces.add(piece);
+  }
+
+  public List<Piece> getPieces() {
+    return this.pieces;
+  }
+
+  public void delPiece(Piece piece) {
+    this.pieces.remove(piece);
   }
 }

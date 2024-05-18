@@ -15,7 +15,7 @@ public class Square {
 
   public void changePiece(Piece newPiece) {
     if (this.piece != null) {
-      this.piece.kill();
+      this.piece.die();
     }
 
     this.piece = newPiece;

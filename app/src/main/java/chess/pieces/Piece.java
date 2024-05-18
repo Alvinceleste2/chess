@@ -2,6 +2,7 @@ package chess.pieces;
 
 import java.util.List;
 
+import chess.Board;
 import chess.exceptions.InvalidMovementException;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -16,9 +17,11 @@ public abstract class Piece {
     this.color = color;
   }
 
-  public void kill() {
+  public void die() {
     this.dead = true;
     this.position = null;
+
+    Board.getInstance().delPiece(this);
   }
 
   public void setPosition(Position position) {

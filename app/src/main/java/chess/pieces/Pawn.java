@@ -52,6 +52,7 @@ public class Pawn extends Piece {
       }
 
     } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
     }
 
     // Check diagonal movements
@@ -62,6 +63,7 @@ public class Pawn extends Piece {
         list.add(posFL);
       }
     } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
     }
 
     try {
@@ -70,6 +72,7 @@ public class Pawn extends Piece {
         list.add(posFR);
       }
     } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
     }
 
     return list;
