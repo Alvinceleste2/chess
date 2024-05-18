@@ -8,4 +8,16 @@ public class Square {
   public Square(Piece piece) {
     this.piece = piece;
   }
+
+  public Piece getPiece() {
+    return this.piece;
+  }
+
+  public void changePiece(Piece newPiece) {
+    if (this.piece != null) {
+      this.piece.kill();
+    }
+
+    this.piece = newPiece;
+  }
 }

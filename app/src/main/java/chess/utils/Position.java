@@ -15,4 +15,25 @@ public class Position {
     this.y = y;
   }
 
+  @Override
+  public String toString() {
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("(");
+    stringBuilder.append(this.x);
+    stringBuilder.append(", ");
+    stringBuilder.append(this.y);
+    stringBuilder.append(")");
+    return stringBuilder.toString();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    Position object = (Position) obj;
+
+    return (object.x == x && object.y == y);
+  }
 }

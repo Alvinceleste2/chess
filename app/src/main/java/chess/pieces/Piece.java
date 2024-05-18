@@ -1,13 +1,31 @@
 package chess.pieces;
 
+import java.util.List;
+
+import chess.exceptions.InvalidMovementException;
+import chess.utils.Color;
 import chess.utils.Position;
 
 public abstract class Piece {
-  private Position pos;
+  protected Position position;
+  protected boolean dead;
+  protected List<Position> movements;
+  protected Color color;
 
-  public Piece(Position pos) {
-    this.pos = pos;
+  public Piece(Color color) {
+    this.color = color;
   }
 
-  public abstract void move(Position pos);
+  public void kill() {
+    this.dead = true;
+    this.position = null;
+  }
+
+  public void setPosition(Position position) {
+    this.position = position;
+  }
+
+  public abstract void move(Position position) throws InvalidMovementException;
+
+  public abstract List<Position> calculateMovements();
 }
