@@ -37,6 +37,10 @@ public class Pawn extends Piece {
     Board.getInstance().getSquare(this.position).changePiece(null);
     Board.getInstance().getSquare(position).changePiece(this);
     this.position = position;
+
+    if (!this.firstMoved) {
+      this.firstMoved = true;
+    }
   }
 
   @Override

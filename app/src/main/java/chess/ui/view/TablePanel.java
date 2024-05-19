@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 
 public class TablePanel extends JPanel {
   private static final double ASPECT_RATIO = 1.0 / 1.0;
-  private BufferedImage backgroundImage;
-  private TilesPanel tilesPanel;
+  private static BufferedImage backgroundImage;
+  private static TilesPanel tilesPanel;
 
   public TablePanel() {
     try {
@@ -26,7 +26,7 @@ public class TablePanel extends JPanel {
     }
 
     this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-    this.tilesPanel = new TilesPanel();
+    tilesPanel = new TilesPanel();
     this.add(Box.createHorizontalGlue());
     this.add(tilesPanel);
     this.add(Box.createHorizontalGlue());
@@ -81,7 +81,7 @@ public class TablePanel extends JPanel {
     }
   }
 
-  public void refresh() {
-    this.tilesPanel.refresh();
+  public static void refresh() {
+    tilesPanel.refresh();
   }
 }

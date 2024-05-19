@@ -14,6 +14,7 @@ import chess.pieces.Piece;
 import chess.utils.Position;
 
 public class TilesPanel extends JPanel {
+  private static Tile selectedTile = null;
 
   public TilesPanel() {
     this.setLayout(new GridBagLayout());
@@ -73,5 +74,13 @@ public class TilesPanel extends JPanel {
     this.setTiles();
     this.revalidate();
     this.repaint();
+  }
+
+  public static Tile getSelectedTile() {
+    return selectedTile;
+  }
+
+  public static void setSelectedTile(Tile t) {
+    selectedTile = t;
   }
 }

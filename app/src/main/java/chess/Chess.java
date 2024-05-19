@@ -20,7 +20,6 @@ public class Chess {
 
     JFrame mainFrame = new JFrame();
     mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    mainFrame.setResizable(false);
 
     TablePanel tablePanel = new TablePanel();
     mainFrame.add(tablePanel);
