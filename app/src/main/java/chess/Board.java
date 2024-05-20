@@ -5,6 +5,7 @@ import java.util.List;
 
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
+import chess.exceptions.InvalidRealocationException;
 import chess.pieces.Bishop;
 import chess.pieces.King;
 import chess.pieces.Knight;
@@ -95,6 +96,17 @@ public class Board {
     this.squares[position.x][position.y].setPiece(piece);
     piece.setPosition(position);
     this.pieces.add(piece);
+  }
+
+  public void realocatePiece(Position start, Position end) throws InvalidRealocationException {
+    if (this.getSquare(start).isEmpty() || !this.getSquare(end).isEmpty()) {
+      throw new InvalidRealocationException();
+    }
+
+    Piece p = this.getPieceAtSquare(start);
+
+    this.getSquare(start).setEmpty();
+    this.getSquare(end).setPiece(p);
   }
 
   public List<Piece> getPieces() {

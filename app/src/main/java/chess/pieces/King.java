@@ -9,6 +9,7 @@ import chess.Board;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
+import chess.exceptions.InvalidRealocationException;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -38,6 +39,10 @@ public class King extends Piece {
       JOptionPane.showMessageDialog(null, "Unable to castling", "Unable to castling",
           JOptionPane.ERROR_MESSAGE);
       super.move(position);
+
+      if (!this.firstMoved) {
+        this.firstMoved = true;
+      }
     } else {
       System.err.println("Conditions to castling reached");
       try {
@@ -45,10 +50,6 @@ public class King extends Piece {
       } catch (InvalidPositionToAddPieceException e) {
         System.err.println("Unable to castling");
       }
-    }
-
-    if (!this.firstMoved) {
-      this.firstMoved = true;
     }
   }
 
@@ -59,6 +60,7 @@ public class King extends Piece {
     if (!(piece instanceof Rook) || piece.color != this.color) {
       return false;
     }
+    System.out.println("1");
 
     Rook r = (Rook) piece;
     double posX = Math.ceil((this.position.x + r.position.x) / 2);
@@ -68,6 +70,7 @@ public class King extends Piece {
           || this.isDangerousPosition(new Position((int) posX, this.position.y))) {
         return false;
       }
+      System.out.println("2");
 
       for (int i = Math.min(this.position.x, r.position.x) + 1; i < Math.max(this.position.x, r.position.x); i++) {
         if (!Board.getInstance().getSquare(new Position(i, this.position.y)).isEmpty()) {
@@ -75,7 +78,10 @@ public class King extends Piece {
         }
       }
 
+      System.out.println("3");
+
     } catch (InvalidPositionException e) {
+      System.out.println("!aaaa");
       System.err.println("Invalid position");
       return false;
     }
@@ -83,16 +89,19 @@ public class King extends Piece {
     if (this.isInCheck()) {
       return false;
     }
+    System.out.println("4");
 
     return true;
   }
 
   public void castling(Position position) throws InvalidPositionToAddPieceException {
     Board board = Board.getInstance();
+    double posX = Math.ceil((this.position.x + position.x) / 2);
 
     try {
-      board.addPiece(board.getSquare(position).replacePiece(this), new Position(3, 5));
-    } catch (InvalidPositionException e) {
+      board.realocatePiece(this.position, new Position((int) posX, this.position.y));
+      board.realocatePiece(position, new Position((int) posX, 6));
+    } catch (InvalidPositionException | InvalidRealocationException e) {
 
     }
   }
@@ -243,7 +252,7 @@ public class King extends Piece {
   }
 
   public boolean isDangerousPosition(Position position) {
-    return this.getDanger().contains(position) ? true : false;
+    return this.getDanger().contains(position);
   }
 
   public boolean isInCheck() {

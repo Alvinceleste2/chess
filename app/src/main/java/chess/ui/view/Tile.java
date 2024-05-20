@@ -87,7 +87,6 @@ public class Tile extends JPanel {
           } catch (InvalidPositionException ep) {
 
           } catch (InvalidMovementException em) {
-            em.printStackTrace();
             JOptionPane.showMessageDialog(null, "Movimiento no válido", "Movimiento inválido",
                 JOptionPane.ERROR_MESSAGE);
             TilesPanel.setSelectedTile(null);
@@ -138,8 +137,6 @@ public class Tile extends JPanel {
   }
 
   private void enforceAspectRatio() {
-    System.out.println(this.getParent());
-    System.out.println(this);
     this.setSize(this.getParent().getWidth() / 9, this.getParent().getHeight() / 9);
   }
 }
