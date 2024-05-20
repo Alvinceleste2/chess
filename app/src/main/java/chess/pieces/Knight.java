@@ -3,8 +3,6 @@ package chess.pieces;
 import java.util.ArrayList;
 import java.util.List;
 
-import chess.Board;
-import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -20,17 +18,6 @@ public class Knight extends Piece {
         this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-black-classic/Knight.png";
         break;
     }
-  }
-
-  @Override
-  public void move(Position position) throws InvalidMovementException {
-    if (!this.calculateMovements().contains(position)) {
-      throw new InvalidMovementException();
-    }
-
-    Board.getInstance().getSquare(this.position).changePiece(null);
-    Board.getInstance().getSquare(position).changePiece(this);
-    this.position = position;
   }
 
   @Override

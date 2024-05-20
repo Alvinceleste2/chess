@@ -10,8 +10,14 @@ import chess.utils.Color;
 import chess.utils.Position;
 
 public class Rook extends Piece {
+
+  private boolean firstMoved;
+
   public Rook(Color color) {
     super(color);
+
+    this.firstMoved = false;
+
     switch (color) {
       case WHITE:
         this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Rook.png";
@@ -24,15 +30,15 @@ public class Rook extends Piece {
 
   @Override
   public void move(Position position) throws InvalidMovementException {
-    if (!this.calculateMovements().contains(position)) {
-      throw new InvalidMovementException();
+    super.move(position);
+
+    if (!this.firstMoved) {
+      this.firstMoved = true;
     }
+  }
 
-    // TODO Check Castling
-
-    Board.getInstance().getSquare(this.position).changePiece(null);
-    Board.getInstance().getSquare(position).changePiece(this);
-    this.position = position;
+  public boolean getFirstMoved() {
+    return this.firstMoved;
   }
 
   @Override
@@ -42,7 +48,7 @@ public class Rook extends Piece {
 
     // Check U
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posU = new Position(this.position.x, this.position.y + i);
         Piece piece = board.getPieceAtSquare(posU);
 
@@ -63,7 +69,7 @@ public class Rook extends Piece {
 
     // Check R
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posR = new Position(this.position.x + i, this.position.y);
         Piece piece = board.getPieceAtSquare(posR);
 
@@ -84,7 +90,7 @@ public class Rook extends Piece {
 
     // Check D
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posD = new Position(this.position.x, this.position.y - i);
         Piece piece = board.getPieceAtSquare(posD);
 
@@ -105,7 +111,7 @@ public class Rook extends Piece {
 
     // Check L
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posL = new Position(this.position.x - i, this.position.y);
         Piece piece = board.getPieceAtSquare(posL);
 

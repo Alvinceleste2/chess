@@ -92,7 +92,7 @@ public class Board {
       throw new InvalidPositionToAddPieceException();
     }
 
-    this.squares[position.x][position.y].changePiece(piece);
+    this.squares[position.x][position.y].setPiece(piece);
     piece.setPosition(position);
     this.pieces.add(piece);
   }

@@ -6,6 +6,7 @@ import java.util.List;
 import chess.Board;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
+import chess.exceptions.InvalidPositionToAddPieceException;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -26,17 +27,15 @@ public class Pawn extends Piece {
 
   @Override
   public void move(Position position) throws InvalidMovementException {
-    if (!this.calculateMovements().contains(position)) {
-      throw new InvalidMovementException();
-    }
+    super.move(position);
 
     if (this.checkPromote()) {
-      // TODO CheckPromote
+      try {
+        this.promote();
+      } catch (InvalidPositionToAddPieceException | InvalidPositionException e) {
+        System.err.println("Unable to promote");
+      }
     }
-
-    Board.getInstance().getSquare(this.position).changePiece(null);
-    Board.getInstance().getSquare(position).changePiece(this);
-    this.position = position;
 
     if (!this.firstMoved) {
       this.firstMoved = true;
@@ -90,12 +89,38 @@ public class Pawn extends Piece {
     return list;
   }
 
+  public List<Position> getAttack() {
+    List<Position> attackPos = new ArrayList<>();
+
+    try {
+      Position posFL = new Position(this.color.add(this.position.x, -1), this.color.add(this.position.y, 1));
+      attackPos.add(posFL);
+
+    } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
+    }
+
+    try {
+      Position posFR = new Position(this.color.add(this.position.x, 1), this.color.add(this.position.y, 1));
+      attackPos.add(posFR);
+
+    } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
+    }
+
+    return attackPos;
+  }
+
   private boolean checkPromote() {
     switch (this.color) {
       case Color.WHITE:
-        return this.position.y == Board.maxY;
+        return this.position.y == Board.maxY - 1;
       default:
         return this.position.y == 0;
     }
+  }
+
+  private void promote() throws InvalidPositionException, InvalidPositionToAddPieceException {
+    Board.getInstance().getSquare(this.position).replacePiece(new Queen(this.color)).die();
   }
 }

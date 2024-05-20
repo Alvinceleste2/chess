@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.Board;
-import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -23,24 +22,13 @@ public class Bishop extends Piece {
   }
 
   @Override
-  public void move(Position position) throws InvalidMovementException {
-    if (!this.calculateMovements().contains(position)) {
-      throw new InvalidMovementException();
-    }
-
-    Board.getInstance().getSquare(this.position).changePiece(null);
-    Board.getInstance().getSquare(position).changePiece(this);
-    this.position = position;
-  }
-
-  @Override
   public List<Position> calculateMovements() {
     List<Position> list = new ArrayList<>();
     Board board = Board.getInstance();
 
     // UR branch
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posUR = new Position(this.position.x + i, this.position.y + i);
         Piece piece = board.getPieceAtSquare(posUR);
 
@@ -49,7 +37,7 @@ public class Bishop extends Piece {
           continue;
         }
 
-        if (piece.color != this.color) {
+        if (!piece.color.equals(this.color)) {
           list.add(posUR);
         }
 
@@ -61,7 +49,7 @@ public class Bishop extends Piece {
 
     // DR branch
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posDR = new Position(this.position.x + i, this.position.y - i);
         Piece piece = board.getPieceAtSquare(posDR);
 
@@ -82,7 +70,7 @@ public class Bishop extends Piece {
 
     // DL branch
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posDL = new Position(this.position.x - i, this.position.y - i);
         Piece piece = board.getPieceAtSquare(posDL);
 
@@ -103,7 +91,7 @@ public class Bishop extends Piece {
 
     // UL branch
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posUL = new Position(this.position.x - i, this.position.y + i);
         Piece piece = board.getPieceAtSquare(posUL);
 

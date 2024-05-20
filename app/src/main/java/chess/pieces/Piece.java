@@ -29,11 +29,23 @@ public abstract class Piece {
     this.position = position;
   }
 
+  public Position getPosition() {
+    return this.position;
+  }
+
   public String getImagePath() {
     return this.imagePath;
   }
 
-  public abstract void move(Position position) throws InvalidMovementException;
+  public void move(Position position) throws InvalidMovementException {
+    if (!this.calculateMovements().contains(position)) {
+      throw new InvalidMovementException();
+    }
+
+    Board.getInstance().getSquare(this.position).setEmpty();
+    Board.getInstance().getSquare(position).setPiece(this);
+    this.position = position;
+  }
 
   public abstract List<Position> calculateMovements();
 }

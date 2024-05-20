@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.Board;
-import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -23,17 +22,6 @@ public class Queen extends Piece {
   }
 
   @Override
-  public void move(Position position) throws InvalidMovementException {
-    if (!this.calculateMovements().contains(position)) {
-      throw new InvalidMovementException();
-    }
-
-    Board.getInstance().getSquare(this.position).changePiece(null);
-    Board.getInstance().getSquare(position).changePiece(this);
-    this.position = position;
-  }
-
-  @Override
   public List<Position> calculateMovements() {
     List<Position> list = new ArrayList<>();
     Board board = Board.getInstance();
@@ -41,7 +29,7 @@ public class Queen extends Piece {
     // First, the Bishop moves
     // UR branch
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posUR = new Position(this.position.x + i, this.position.y + i);
         Piece piece = board.getPieceAtSquare(posUR);
 
@@ -62,7 +50,7 @@ public class Queen extends Piece {
 
     // DR branch
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posDR = new Position(this.position.x + i, this.position.y - i);
         Piece piece = board.getPieceAtSquare(posDR);
 
@@ -83,7 +71,7 @@ public class Queen extends Piece {
 
     // DL branch
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posDL = new Position(this.position.x - i, this.position.y - i);
         Piece piece = board.getPieceAtSquare(posDL);
 
@@ -104,7 +92,7 @@ public class Queen extends Piece {
 
     // UL branch
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posUL = new Position(this.position.x - i, this.position.y + i);
         Piece piece = board.getPieceAtSquare(posUL);
 
@@ -126,7 +114,7 @@ public class Queen extends Piece {
     // Then, the Rook ones
     // Check U
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posU = new Position(this.position.x, this.position.y + i);
         Piece piece = board.getPieceAtSquare(posU);
 
@@ -147,7 +135,7 @@ public class Queen extends Piece {
 
     // Check R
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posR = new Position(this.position.x + i, this.position.y);
         Piece piece = board.getPieceAtSquare(posR);
 
@@ -168,7 +156,7 @@ public class Queen extends Piece {
 
     // Check D
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posD = new Position(this.position.x, this.position.y - i);
         Piece piece = board.getPieceAtSquare(posD);
 
@@ -189,7 +177,7 @@ public class Queen extends Piece {
 
     // Check L
     try {
-      for (int i = 0;; i++) {
+      for (int i = 1;; i++) {
         Position posL = new Position(this.position.x - i, this.position.y);
         Piece piece = board.getPieceAtSquare(posL);
 
