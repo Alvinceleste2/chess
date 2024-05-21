@@ -1,7 +1,7 @@
 package chess.utils;
 
-import chess.Board;
 import chess.exceptions.InvalidPositionException;
+import chess.table.Board;
 
 public class Position {
   public int x, y;

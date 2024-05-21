@@ -1,4 +1,4 @@
-package chess.pieces;
+package chess.table.pieces;
 
 import java.util.ArrayList;
 import java.util.List;

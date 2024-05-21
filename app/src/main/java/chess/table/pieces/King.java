@@ -1,15 +1,13 @@
-package chess.pieces;
+package chess.table.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import chess.Board;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
 import chess.exceptions.InvalidRealocationException;
+import chess.table.Board;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -36,8 +34,6 @@ public class King extends Piece {
   public void move(Position position) throws InvalidMovementException {
     if (!this.checkCastling(position)) {
       System.err.println("Unable to castling");
-      JOptionPane.showMessageDialog(null, "Unable to castling", "Unable to castling",
-          JOptionPane.ERROR_MESSAGE);
       super.move(position);
 
       if (!this.firstMoved) {
@@ -96,11 +92,14 @@ public class King extends Piece {
 
   public void castling(Position position) throws InvalidPositionToAddPieceException {
     Board board = Board.getInstance();
-    double posX = Math.ceil((this.position.x + position.x) / 2);
+    double posXK = Math.ceil(((double) this.position.x + (double) position.x) / 2);
+    double posXR = (this.position.x > board.getPieceAtSquare(position).position.x) ? posXK + 1 : posXK - 1;
+
+    System.out.println(posXK);
 
     try {
-      board.realocatePiece(this.position, new Position((int) posX, this.position.y));
-      board.realocatePiece(position, new Position((int) posX, 6));
+      board.realocatePiece(this.position, new Position((int) posXK, this.position.y));
+      board.realocatePiece(position, new Position((int) posXR, this.position.y));
     } catch (InvalidPositionException | InvalidRealocationException e) {
 
     }

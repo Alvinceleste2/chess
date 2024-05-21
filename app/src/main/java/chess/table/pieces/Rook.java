@@ -1,11 +1,11 @@
-package chess.pieces;
+package chess.table.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import chess.Board;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
+import chess.table.Board;
 import chess.utils.Color;
 import chess.utils.Position;
 

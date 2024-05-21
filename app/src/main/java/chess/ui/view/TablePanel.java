@@ -1,5 +1,6 @@
 package chess.ui.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
@@ -9,8 +10,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 public class TablePanel extends JPanel {
@@ -25,16 +24,15 @@ public class TablePanel extends JPanel {
       e.printStackTrace();
     }
 
-    this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    this.setLayout(new BorderLayout());
     tilesPanel = new TilesPanel();
-    this.add(Box.createHorizontalGlue());
-    this.add(tilesPanel);
-    this.add(Box.createHorizontalGlue());
+    this.add(tilesPanel, BorderLayout.CENTER);
 
     this.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        enforceAspectRatio();
+        // TODO enforceAspectRatio
+        // enforceAspectRatio();
       }
     });
   }
@@ -62,21 +60,7 @@ public class TablePanel extends JPanel {
     super.paintComponent(g);
 
     if (backgroundImage != null) {
-      int panelWidth = getWidth();
-      int panelHeight = getHeight();
-
-      double scaleX = (double) panelWidth / backgroundImage.getWidth();
-      double scaleY = (double) panelHeight / backgroundImage.getHeight();
-
-      double scale = Math.max(scaleX, scaleY);
-
-      int scaledWidth = (int) (scale * backgroundImage.getWidth());
-      int scaledHeight = (int) (scale * backgroundImage.getHeight());
-
-      int x = (panelWidth - scaledWidth) / 2;
-      int y = (panelHeight - scaledHeight) / 2;
-
-      g.drawImage(backgroundImage, x, y, scaledWidth, scaledHeight, this);
+      g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
       this.setBackground(Color.RED);
     }
   }

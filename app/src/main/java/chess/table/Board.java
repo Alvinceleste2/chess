@@ -1,18 +1,19 @@
-package chess;
+package chess.table;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import chess.exceptions.InvalidPieceSwitchException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
 import chess.exceptions.InvalidRealocationException;
-import chess.pieces.Bishop;
-import chess.pieces.King;
-import chess.pieces.Knight;
-import chess.pieces.Pawn;
-import chess.pieces.Piece;
-import chess.pieces.Queen;
-import chess.pieces.Rook;
+import chess.table.pieces.Bishop;
+import chess.table.pieces.King;
+import chess.table.pieces.Knight;
+import chess.table.pieces.Pawn;
+import chess.table.pieces.Piece;
+import chess.table.pieces.Queen;
+import chess.table.pieces.Rook;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -21,10 +22,10 @@ public class Board {
   private static Board boardInstance = null;
 
   private Square[][] squares;
-  private List<Piece> pieces;
+  private Set<Piece> pieces;
 
   private Board() {
-    this.pieces = new ArrayList<>();
+    this.pieces = new HashSet<>();
     this.squares = new Square[maxX][maxY];
 
     for (int i = 0; i < maxX; i++) {
@@ -89,7 +90,7 @@ public class Board {
   }
 
   public void addPiece(Piece piece, Position position) throws InvalidPositionToAddPieceException {
-    if (this.getPieceAtSquare(position) != null) {
+    if (!this.getSquare(position).isEmpty()) {
       throw new InvalidPositionToAddPieceException();
     }
 
@@ -98,22 +99,41 @@ public class Board {
     this.pieces.add(piece);
   }
 
+  public void switchPieces(Piece newPiece, Position position) throws InvalidPieceSwitchException {
+    if (newPiece == null || this.getSquare(position).isEmpty()) {
+      throw new InvalidPieceSwitchException();
+    }
+
+    this.getPieceAtSquare(position).die();
+
+    try {
+      this.addPiece(newPiece, position);
+    } catch (InvalidPositionToAddPieceException e) {
+
+    }
+  }
+
   public void realocatePiece(Position start, Position end) throws InvalidRealocationException {
-    if (this.getSquare(start).isEmpty() || !this.getSquare(end).isEmpty()) {
+    if (this.getSquare(start).isEmpty()) {
       throw new InvalidRealocationException();
     }
 
     Piece p = this.getPieceAtSquare(start);
 
-    this.getSquare(start).setEmpty();
-    this.getSquare(end).setPiece(p);
+    try {
+      this.addPiece(p, end);
+      this.getSquare(start).setEmpty();
+    } catch (InvalidPositionToAddPieceException e) {
+      throw new InvalidRealocationException();
+    }
   }
 
-  public List<Piece> getPieces() {
+  public Set<Piece> getPieces() {
     return this.pieces;
   }
 
   public void delPiece(Piece piece) {
+    this.getSquare(piece.getPosition()).setEmpty();
     this.pieces.remove(piece);
   }
 }

@@ -1,12 +1,13 @@
-package chess.pieces;
+package chess.table.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import chess.Board;
 import chess.exceptions.InvalidMovementException;
+import chess.exceptions.InvalidPieceSwitchException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
+import chess.table.Board;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -32,7 +33,7 @@ public class Pawn extends Piece {
     if (this.checkPromote()) {
       try {
         this.promote();
-      } catch (InvalidPositionToAddPieceException | InvalidPositionException e) {
+      } catch (InvalidPositionToAddPieceException | InvalidPositionException | InvalidPieceSwitchException e) {
         System.err.println("Unable to promote");
       }
     }
@@ -120,7 +121,8 @@ public class Pawn extends Piece {
     }
   }
 
-  private void promote() throws InvalidPositionException, InvalidPositionToAddPieceException {
-    Board.getInstance().getSquare(this.position).replacePiece(new Queen(this.color)).die();
+  private void promote()
+      throws InvalidPositionException, InvalidPositionToAddPieceException, InvalidPieceSwitchException {
+    Board.getInstance().switchPieces(new Queen(this.color), this.position);
   }
 }

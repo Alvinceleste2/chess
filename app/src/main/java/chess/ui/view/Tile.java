@@ -2,7 +2,6 @@ package chess.ui.view;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
@@ -17,11 +16,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
-import chess.Board;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
+import chess.table.Board;
 import chess.utils.Position;
 
 public class Tile extends JPanel {
@@ -42,7 +40,8 @@ public class Tile extends JPanel {
     this.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        enforceAspectRatio();
+        // TODO enforceAspectRatio
+        // enforceAspectRatio();
       }
     });
 

@@ -1,6 +1,6 @@
-package chess;
+package chess.table;
 
-import chess.pieces.Piece;
+import chess.table.pieces.Piece;
 
 public class Square {
   private Piece piece;
@@ -29,13 +29,5 @@ public class Square {
     }
 
     this.piece = newPiece;
-  }
-
-  public Piece replacePiece(Piece newPiece) {
-    Piece p = this.piece;
-
-    newPiece.setPosition(p.getPosition());
-    this.piece = newPiece;
-    return p;
   }
 }

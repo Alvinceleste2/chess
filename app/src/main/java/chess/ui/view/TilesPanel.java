@@ -8,9 +8,9 @@ import java.awt.event.ComponentEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import chess.Board;
 import chess.exceptions.InvalidPositionException;
-import chess.pieces.Piece;
+import chess.table.Board;
+import chess.table.pieces.Piece;
 import chess.utils.Position;
 
 public class TilesPanel extends JPanel {
@@ -19,11 +19,13 @@ public class TilesPanel extends JPanel {
   public TilesPanel() {
     this.setLayout(new GridBagLayout());
     this.setOpaque(false);
+    this.setBorder(BorderFactory.createEmptyBorder(32, 32, 32, 32));
 
     this.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        enforceAspectRatio();
+        // TODO enforceAspectRatio
+        // enforceAspectRatio();
       }
     });
 

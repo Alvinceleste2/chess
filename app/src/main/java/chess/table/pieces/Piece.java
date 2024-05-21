@@ -1,9 +1,9 @@
-package chess.pieces;
+package chess.table.pieces;
 
 import java.util.List;
 
-import chess.Board;
 import chess.exceptions.InvalidMovementException;
+import chess.table.Board;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -20,9 +20,8 @@ public abstract class Piece {
 
   public void die() {
     this.dead = true;
-    this.position = null;
-
     Board.getInstance().delPiece(this);
+    this.position = null;
   }
 
   public void setPosition(Position position) {
