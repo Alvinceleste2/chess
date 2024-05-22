@@ -36,4 +36,13 @@ public class Position {
 
     return (object.x == x && object.y == y);
   }
+
+  public static Position createPosition(int x, int y) {
+    try {
+      Position pos = new Position(x, y);
+      return pos;
+    } catch (InvalidPositionException e) {
+      return null;
+    }
+  }
 }

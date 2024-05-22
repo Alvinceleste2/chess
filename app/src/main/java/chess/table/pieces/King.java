@@ -1,7 +1,15 @@
 package chess.table.pieces;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
@@ -43,6 +51,15 @@ public class King extends Piece {
       System.err.println("Conditions to castling reached");
       try {
         this.castling(position);
+        try {
+          File soundFile = new File("./../assets/audio/castle.wav");
+          AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+          Clip clip = AudioSystem.getClip();
+          clip.open(audioIn);
+          clip.start(); // Start playing the sound
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ea) {
+          ea.printStackTrace();
+        }
       } catch (InvalidPositionToAddPieceException e) {
         System.err.println("Unable to castling");
       }

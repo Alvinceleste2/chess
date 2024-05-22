@@ -1,4 +1,4 @@
-package chess.ui.view;
+package chess.ui;
 
 import java.awt.Color;
 

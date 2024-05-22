@@ -1,4 +1,4 @@
-package chess.ui.view;
+package chess.ui.center;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 public class TablePanel extends JPanel {
   private static final double ASPECT_RATIO = 1.0 / 1.0;
   private static BufferedImage backgroundImage;
-  private static TilesPanel tilesPanel;
 
   public TablePanel() {
     try {
@@ -25,8 +24,8 @@ public class TablePanel extends JPanel {
     }
 
     this.setLayout(new BorderLayout());
-    tilesPanel = new TilesPanel();
-    this.add(tilesPanel, BorderLayout.CENTER);
+    this.add(TilesPanel.getInstance(), BorderLayout.CENTER);
+    TilesPanel.setTiles();
 
     this.addComponentListener(new ComponentAdapter() {
       @Override
@@ -66,6 +65,6 @@ public class TablePanel extends JPanel {
   }
 
   public static void refresh() {
-    tilesPanel.refresh();
+    TilesPanel.refresh();
   }
 }
