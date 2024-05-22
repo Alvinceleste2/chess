@@ -102,16 +102,6 @@ public class Tile extends JPanel {
 
           } catch (InvalidMovementException em) {
 
-            try {
-              File soundFile = new File("./../assets/audio/illegal.wav");
-              AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-              Clip clip = AudioSystem.getClip();
-              clip.open(audioIn);
-              clip.start(); // Start playing the sound
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ea) {
-              ea.printStackTrace();
-            }
-
             TilesPanel.setSelectedTile(null).blinking();
           }
         }
