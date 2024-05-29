@@ -73,36 +73,24 @@ public class King extends Piece {
     if (!(piece instanceof Rook) || piece.color != this.color) {
       return false;
     }
-    System.out.println("1");
 
     Rook r = (Rook) piece;
     double posX = Math.ceil((this.position.x + r.position.x) / 2);
 
-    try {
-      if (r.getFirstMoved() || this.firstMoved
-          || this.isDangerousPosition(new Position((int) posX, this.position.y))) {
+    if (r.getFirstMoved() || this.firstMoved
+        || this.isDangerousPosition(Position.createPosition((int) posX, this.position.y))) {
+      return false;
+    }
+
+    for (int i = Math.min(this.position.x, r.position.x) + 1; i < Math.max(this.position.x, r.position.x); i++) {
+      if (!Board.getInstance().getSquare(Position.createPosition(i, this.position.y)).isEmpty()) {
         return false;
       }
-      System.out.println("2");
-
-      for (int i = Math.min(this.position.x, r.position.x) + 1; i < Math.max(this.position.x, r.position.x); i++) {
-        if (!Board.getInstance().getSquare(new Position(i, this.position.y)).isEmpty()) {
-          return false;
-        }
-      }
-
-      System.out.println("3");
-
-    } catch (InvalidPositionException e) {
-      System.out.println("!aaaa");
-      System.err.println("Invalid position");
-      return false;
     }
 
     if (this.isInCheck()) {
       return false;
     }
-    System.out.println("4");
 
     return true;
   }
@@ -127,6 +115,7 @@ public class King extends Piece {
 
     list.addAll(this.getMovements());
     list.removeAll(this.getDanger());
+    list.addAll(this.getCastling());
 
     return list;
   }
@@ -265,6 +254,25 @@ public class King extends Piece {
     }
 
     return posToErase;
+  }
+
+  public List<Position> getCastling() {
+    List<Position> list = new ArrayList<>();
+
+    // We check if castling is possible
+
+    Position posI = Position.createPosition(0, this.position.y),
+        posD = Position.createPosition(Board.maxX - 1, this.position.y);
+
+    if (checkCastling(posI)) {
+      list.add(posI);
+    }
+
+    if (checkCastling(posD)) {
+      list.add(posD);
+    }
+
+    return list;
   }
 
   public boolean isDangerousPosition(Position position) {

@@ -1,8 +1,8 @@
-package chess;
+package chess.engine;
 
 public class GameEngine {
   private Player turn;
-  private boolean checkMate;
+  private boolean check, mate;
 
   private GameEngine() {
 

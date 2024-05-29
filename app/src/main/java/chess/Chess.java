@@ -10,6 +10,7 @@ import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
 import chess.table.Board;
+import chess.ui.ProfilePanel;
 import chess.ui.center.TablePanel;
 
 public class Chess {
