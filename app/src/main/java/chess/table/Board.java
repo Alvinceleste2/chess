@@ -14,12 +14,14 @@ import chess.table.pieces.Pawn;
 import chess.table.pieces.Piece;
 import chess.table.pieces.Queen;
 import chess.table.pieces.Rook;
+import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
 
 public class Board {
   public static int maxX = 8, maxY = 8;
   private static Board boardInstance = null;
+  public static String imagePath = Assets.boardPath;
 
   private Square[][] squares;
   private Set<Piece> pieces;

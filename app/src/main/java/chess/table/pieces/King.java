@@ -25,17 +25,8 @@ public class King extends Piece {
 
   public King(Color color) {
     super(color);
-
     this.firstMoved = false;
-
-    switch (color) {
-      case WHITE:
-        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/King.png";
-        break;
-      default:
-        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-black-classic/King.png";
-        break;
-    }
+    this.imagePath += this.color + "/King.png";
   }
 
   @Override

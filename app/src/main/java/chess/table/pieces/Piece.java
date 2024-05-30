@@ -12,6 +12,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import chess.exceptions.InvalidMovementException;
 import chess.table.Board;
+import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -20,7 +21,7 @@ public abstract class Piece {
   protected boolean dead;
   protected List<Position> movements;
   protected Color color;
-  protected String imagePath;
+  protected String imagePath = Assets.piecesPath;
 
   public Piece(Color color) {
     this.color = color;

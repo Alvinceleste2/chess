@@ -1,6 +1,5 @@
 package chess.ui.center;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
@@ -10,7 +9,11 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+
+import chess.table.Board;
 
 public class TablePanel extends JPanel {
   private static final double ASPECT_RATIO = 1.0 / 1.0;
@@ -18,20 +21,19 @@ public class TablePanel extends JPanel {
 
   public TablePanel() {
     try {
-      backgroundImage = ImageIO.read(new File("./../assets/ChessSet/Classic/Board/Board-classic2.png"));
+      backgroundImage = ImageIO.read(new File(Board.imagePath));
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    this.setLayout(new BorderLayout());
-    this.add(TilesPanel.getInstance(), BorderLayout.CENTER);
+    this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    this.add(TilesPanel.getInstance());
     TilesPanel.setTiles();
 
     this.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        // TODO enforceAspectRatio
-        // enforceAspectRatio();
+        enforceAspectRatio();
       }
     });
   }
@@ -48,9 +50,9 @@ public class TablePanel extends JPanel {
     // height
 
     if (expectedWidth < expectedHeight) {
-      setSize(expectedWidth, height);
+      this.setSize(expectedWidth, height);
     } else {
-      setSize(width, expectedHeight);
+      this.setSize(width, expectedHeight);
     }
   }
 

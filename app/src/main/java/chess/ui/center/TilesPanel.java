@@ -1,6 +1,7 @@
 package chess.ui.center;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ComponentAdapter;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import chess.exceptions.InvalidPositionException;
 import chess.table.Board;
 import chess.table.pieces.Piece;
+import chess.utils.Assets;
 import chess.utils.Position;
 
 public class TilesPanel extends JPanel {
@@ -34,7 +36,7 @@ public class TilesPanel extends JPanel {
       @Override
       public void componentResized(ComponentEvent e) {
         // TODO enforceAspectRatio
-        // enforceAspectRatio();
+        enforceAspectRatio();
       }
     });
   }
@@ -60,13 +62,13 @@ public class TilesPanel extends JPanel {
         for (int j = 0; j < Board.maxY; j++) {
 
           gbc.gridx = i;
-          gbc.gridy = j;
+          gbc.gridy = Board.maxY - j - 1;
 
           Piece piece = board.getPieceAtSquare(new Position(i, j));
           Tile tile;
 
           if (piece == null) {
-            tile = new Tile("./../assets/blank.png", i, j);
+            tile = new Tile(Assets.blankPath, i, j);
           } else {
             tile = new Tile(board.getPieceAtSquare(new Position(i, j)).getImagePath(), i, j);
           }
@@ -87,10 +89,13 @@ public class TilesPanel extends JPanel {
   }
 
   private void enforceAspectRatio() {
-    this.setSize(this.getParent().getWidth(), this.getParent().getHeight());
+    this.setSize(new Dimension(this.getParent().getWidth(), this.getParent().getHeight()));
+
     this.setBorder(
-        BorderFactory.createEmptyBorder((int) (getWidth() / 18), (int) (getWidth() / 18), (int) (getWidth() / 18),
-            (int) (getWidth() / 18)));
+        BorderFactory.createEmptyBorder((int) (this.getParent().getWidth() / 18),
+            (int) (this.getParent().getWidth() / 18),
+            (int) (this.getParent().getWidth() / 18),
+            (int) (this.getParent().getWidth() / 18)));
   }
 
   public static void refresh() {

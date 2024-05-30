@@ -18,14 +18,7 @@ public class Rook extends Piece {
 
     this.firstMoved = false;
 
-    switch (color) {
-      case WHITE:
-        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Rook.png";
-        break;
-      default:
-        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-black-classic/Rook.png";
-        break;
-    }
+    this.imagePath += this.color + "/Rook.png";
   }
 
   @Override

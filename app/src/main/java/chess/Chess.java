@@ -9,14 +9,24 @@ import javax.swing.SwingUtilities;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
+import chess.exceptions.InvalidThemeException;
 import chess.table.Board;
+import chess.ui.GameDataPanel;
 import chess.ui.ProfilePanel;
 import chess.ui.center.TablePanel;
+import chess.utils.Assets;
 
 public class Chess {
   public static void main(String[] args)
       throws InvalidPositionException, InvalidPositionToAddPieceException, InvalidMovementException {
     System.out.println("Hello, World");
+
+    try {
+      Assets.buildPaths("wooden2");
+    } catch (InvalidThemeException e) {
+      System.out.println(e);
+      return;
+    }
 
     Board board = Board.getInstance();
     board.boardInit();
@@ -27,7 +37,6 @@ public class Chess {
         JFrame mainFrame = new JFrame();
         mainFrame.setLayout(new BorderLayout());
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setResizable(false);
 
         TablePanel tablePanel = new TablePanel();
         mainFrame.add(tablePanel, BorderLayout.CENTER);

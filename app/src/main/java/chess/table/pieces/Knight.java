@@ -10,14 +10,7 @@ import chess.utils.Position;
 public class Knight extends Piece {
   public Knight(Color color) {
     super(color);
-    switch (color) {
-      case WHITE:
-        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Knight.png";
-        break;
-      default:
-        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-black-classic/Knight.png";
-        break;
-    }
+    this.imagePath += this.color + "/Knight.png";
   }
 
   @Override

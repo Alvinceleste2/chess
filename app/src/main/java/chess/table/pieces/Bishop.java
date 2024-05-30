@@ -11,14 +11,7 @@ import chess.utils.Position;
 public class Bishop extends Piece {
   public Bishop(Color color) {
     super(color);
-    switch (color) {
-      case WHITE:
-        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-white-classic/Bishop.png";
-        break;
-      default:
-        this.imagePath = "./../assets/ChessSet/Classic/Pieces/Chess-black-classic/Bishop.png";
-        break;
-    }
+    this.imagePath += this.color + "/Bishop.png";
   }
 
   @Override
