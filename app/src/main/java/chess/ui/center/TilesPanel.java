@@ -23,6 +23,7 @@ public class TilesPanel extends JPanel {
   private static Tile selectedTile = null;
   private static List<Tile> selectedTileMovements;
   private static Tile[][] tiles;
+  private static final double ASPECT_RATIO = 1.0 / 1.0;
 
   private TilesPanel() {
     this.setLayout(new GridBagLayout());
@@ -89,7 +90,21 @@ public class TilesPanel extends JPanel {
   }
 
   private void enforceAspectRatio() {
-    this.setSize(new Dimension(this.getParent().getWidth(), this.getParent().getHeight()));
+    int width = getWidth();
+    int height = getHeight();
+
+    // Calculate the expected height based on the width and aspect ratio
+    int expectedHeight = (int) (width / ASPECT_RATIO);
+    int expectedWidth = (int) (height / ASPECT_RATIO);
+
+    // If the calculated height is different from the actual height, set the new
+    // height
+
+    if (expectedWidth < expectedHeight) {
+      this.setSize(expectedWidth, height);
+    } else {
+      this.setSize(width, expectedHeight);
+    }
 
     this.setBorder(
         BorderFactory.createEmptyBorder((int) (this.getParent().getWidth() / 18),
