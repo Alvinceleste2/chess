@@ -1,6 +1,8 @@
 package chess.table;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import chess.exceptions.InvalidPieceSwitchException;
@@ -17,6 +19,7 @@ import chess.table.pieces.Rook;
 import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
+import chess.engine.Movement;
 
 public class Board {
   public static int maxX = 8, maxY = 8;
@@ -25,9 +28,11 @@ public class Board {
 
   private Square[][] squares;
   private Set<Piece> pieces;
+  private List<Movement> movements;
 
   private Board() {
     this.pieces = new HashSet<>();
+    this.movements = new ArrayList<>();
     this.squares = new Square[maxX][maxY];
 
     for (int i = 0; i < maxX; i++) {
@@ -44,7 +49,8 @@ public class Board {
     return boardInstance;
   }
 
-  public void boardInit() throws InvalidPositionToAddPieceException, InvalidPositionException {
+  public void boardInit(King whiteKing, King blackKing)
+      throws InvalidPositionToAddPieceException, InvalidPositionException {
 
     // We add the pawns
     for (int i = 0; i < maxX; i++) {
@@ -67,7 +73,7 @@ public class Board {
     boardInstance.addPiece(new Bishop(Color.WHITE), new Position(5, 0));
 
     boardInstance.addPiece(new Queen(Color.WHITE), new Position(3, 0));
-    boardInstance.addPiece(new King(Color.WHITE), new Position(4, 0));
+    boardInstance.addPiece(whiteKing, new Position(4, 0));
 
     // Black
     boardInstance.addPiece(new Rook(Color.BLACK), new Position(0, 7));
@@ -80,7 +86,7 @@ public class Board {
     boardInstance.addPiece(new Bishop(Color.BLACK), new Position(5, 7));
 
     boardInstance.addPiece(new Queen(Color.BLACK), new Position(3, 7));
-    boardInstance.addPiece(new King(Color.BLACK), new Position(4, 7));
+    boardInstance.addPiece(blackKing, new Position(4, 7));
   }
 
   public Piece getPieceAtSquare(Position position) {
@@ -137,5 +143,13 @@ public class Board {
   public void delPiece(Piece piece) {
     this.getSquare(piece.getPosition()).setEmpty();
     this.pieces.remove(piece);
+  }
+
+  public void addMovement(Piece piece, Position startPos, Position endPos, boolean capture, boolean check) {
+    this.movements.add(new Movement(piece, startPos, endPos, capture, check));
+  }
+
+  public List<Movement> getMovements() {
+    return this.movements;
   }
 }

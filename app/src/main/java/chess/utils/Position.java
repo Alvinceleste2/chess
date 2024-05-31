@@ -4,6 +4,7 @@ import chess.exceptions.InvalidPositionException;
 import chess.table.Board;
 
 public class Position {
+  private final static String[] letters = { "a", "b", "c", "d", "e", "f", "g", "h" };
   public int x, y;
 
   public Position(int x, int y) throws InvalidPositionException {
@@ -17,13 +18,7 @@ public class Position {
 
   @Override
   public String toString() {
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("(");
-    stringBuilder.append(this.x);
-    stringBuilder.append(", ");
-    stringBuilder.append(this.y);
-    stringBuilder.append(")");
-    return stringBuilder.toString();
+    return Position.letters[this.x] + Integer.toString(this.y + 1);
   }
 
   @Override

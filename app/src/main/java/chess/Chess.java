@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import chess.engine.GameEngine;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
@@ -31,8 +32,9 @@ public class Chess {
       return;
     }
 
-    Board board = Board.getInstance();
-    board.boardInit();
+    GameEngine ge = GameEngine.getInstance();
+    ge.init();
+    ge.start();
 
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
@@ -46,14 +48,14 @@ public class Chess {
         mainFrame.add(mainPanel);
 
         Chess.add(mainPanel, new TablePanel(), 0, 0, 3, 3, 0);
-        Chess.add(mainPanel, new GameDataPanel(), 4, 0, 2, 3, 0);
+        // Chess.add(mainPanel, new GameDataPanel(), 4, 0, 2, 3, 0);
 
         // mainFrame.add(new TablePanel(), BorderLayout.CENTER);
         // mainFrame.add(new ProfilePanel(), BorderLayout.NORTH);
         // mainFrame.add(new ProfilePanel(), BorderLayout.SOUTH);
         // mainFrame.add(new GameDataPanel(), BorderLayout.EAST);
 
-        mainFrame.pack();
+        mainFrame.setSize(578, 578);
         mainFrame.setVisible(true);
       }
     });

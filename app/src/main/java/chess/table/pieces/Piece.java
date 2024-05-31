@@ -10,6 +10,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import chess.engine.GameEngine;
 import chess.exceptions.InvalidMovementException;
 import chess.table.Board;
 import chess.utils.Assets;
@@ -75,4 +76,8 @@ public abstract class Piece {
   }
 
   public abstract List<Position> calculateMovements();
+
+  public Color getColor() {
+    return this.color;
+  }
 }

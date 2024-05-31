@@ -17,9 +17,11 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import chess.engine.GameEngine;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
 import chess.table.Board;
+import chess.table.Square;
 import chess.utils.Position;
 
 public class Tile extends JPanel {
@@ -69,7 +71,12 @@ public class Tile extends JPanel {
         Tile tile = (Tile) e.getSource();
 
         if (TilesPanel.getSelectedTile() == null) {
-          if (Board.getInstance().getSquare(Position.createPosition(tile.x, tile.y)).isEmpty()) {
+          Square sq = Board.getInstance().getSquare(Position.createPosition(tile.x, tile.y));
+          if (sq.isEmpty()) {
+            return;
+          }
+
+          if (!GameEngine.getInstance().checkTurn(sq.getPiece())) {
             return;
           }
 
@@ -88,6 +95,7 @@ public class Tile extends JPanel {
             Position finalPos = new Position(tile.x, tile.y);
 
             Board.getInstance().getPieceAtSquare(startPos).move(finalPos);
+            GameEngine.getInstance().next();
 
             TablePanel.refresh();
             TilesPanel.setSelectedTile(null);
@@ -95,7 +103,6 @@ public class Tile extends JPanel {
           } catch (InvalidPositionException ep) {
 
           } catch (InvalidMovementException em) {
-
             TilesPanel.setSelectedTile(null).blinking();
           }
         }
