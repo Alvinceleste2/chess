@@ -13,12 +13,14 @@ public class Rook extends Piece {
 
   private boolean firstMoved;
 
-  public Rook(Color color) {
+  public Rook(Color color, boolean firstMoved) {
     super(color);
-
     this.firstMoved = false;
-
     this.imagePath += this.color + "/Rook.png";
+  }
+
+  public Rook(Color color) {
+    this(color, false);
   }
 
   @Override
@@ -124,5 +126,9 @@ public class Rook extends Piece {
     }
 
     return list;
+  }
+
+  public Rook clone() {
+    return new Rook(this.color, this.firstMoved);
   }
 }

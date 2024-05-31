@@ -26,11 +26,13 @@ public class Board {
   private static Board boardInstance = null;
   public static String imagePath = Assets.boardPath;
 
+  private King whiteKing, blackKing;
+
   private Square[][] squares;
   private Set<Piece> pieces;
   private List<Movement> movements;
 
-  private Board() {
+  public Board() {
     this.pieces = new HashSet<>();
     this.movements = new ArrayList<>();
     this.squares = new Square[maxX][maxY];
@@ -51,6 +53,9 @@ public class Board {
 
   public void boardInit(King whiteKing, King blackKing)
       throws InvalidPositionToAddPieceException, InvalidPositionException {
+
+    this.whiteKing = whiteKing;
+    this.blackKing = blackKing;
 
     // We add the pawns
     for (int i = 0; i < maxX; i++) {
@@ -152,4 +157,23 @@ public class Board {
   public List<Movement> getMovements() {
     return this.movements;
   }
+
+  public Board clone() {
+    Board cloneBoard = new Board();
+
+    for (int i = 0; i < Board.maxX; i++) {
+      for (int j = 0; j < Board.maxY; j++) {
+        try {
+          Position pos = Position.createPosition(i, j);
+          cloneBoard.addPiece(this.getPieceAtSquare(pos).clone(), pos);
+        } catch (InvalidPositionToAddPieceException e) {
+
+        }
+      }
+    }
+
+    return cloneBoard;
+  }
+
+  // public String makeFEN() {}
 }

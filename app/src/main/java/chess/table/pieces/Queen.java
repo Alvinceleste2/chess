@@ -191,4 +191,8 @@ public class Queen extends Piece {
 
     return list;
   }
+
+  public Queen clone() {
+    return new Queen(this.color);
+  }
 }

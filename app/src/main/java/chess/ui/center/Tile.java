@@ -95,7 +95,6 @@ public class Tile extends JPanel {
             Position finalPos = new Position(tile.x, tile.y);
 
             Board.getInstance().getPieceAtSquare(startPos).move(finalPos);
-            GameEngine.getInstance().next();
 
             TablePanel.refresh();
             TilesPanel.setSelectedTile(null);

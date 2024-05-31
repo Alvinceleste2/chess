@@ -83,4 +83,8 @@ public class Knight extends Piece {
 
     return list;
   }
+
+  public Knight clone() {
+    return new Knight(this.color);
+  }
 }

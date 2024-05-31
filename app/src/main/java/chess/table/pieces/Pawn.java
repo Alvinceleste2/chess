@@ -12,11 +12,16 @@ import chess.utils.Color;
 import chess.utils.Position;
 
 public class Pawn extends Piece {
-  private boolean firstMoved = false;
+  private boolean firstMoved;
+
+  public Pawn(Color color, boolean firstMoved) {
+    super(color);
+    this.firstMoved = firstMoved;
+    this.imagePath += this.color + "/Pawn.png";
+  }
 
   public Pawn(Color color) {
-    super(color);
-    this.imagePath += this.color + "/Pawn.png";
+    this(color, false);
   }
 
   @Override
@@ -117,5 +122,9 @@ public class Pawn extends Piece {
   private void promote()
       throws InvalidPositionException, InvalidPositionToAddPieceException, InvalidPieceSwitchException {
     Board.getInstance().switchPieces(new Queen(this.color), this.position);
+  }
+
+  public Pawn clone() {
+    return new Pawn(this.color, this.firstMoved);
   }
 }

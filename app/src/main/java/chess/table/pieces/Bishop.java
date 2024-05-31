@@ -105,4 +105,8 @@ public class Bishop extends Piece {
 
     return list;
   }
+
+  public Bishop clone() {
+    return new Bishop(this.color);
+  }
 }

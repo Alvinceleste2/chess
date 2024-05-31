@@ -1,15 +1,7 @@
 package chess.table.pieces;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPositionException;
@@ -18,41 +10,40 @@ import chess.exceptions.InvalidRealocationException;
 import chess.table.Board;
 import chess.utils.Color;
 import chess.utils.Position;
+import chess.utils.Sound;
 
 public class King extends Piece {
 
   private boolean firstMoved;
 
-  public King(Color color) {
+  public King(Color color, boolean firstMoved) {
     super(color);
-    this.firstMoved = false;
+    this.firstMoved = firstMoved;
     this.imagePath += this.color + "/King.png";
+  }
+
+  public King(Color color) {
+    this(color, false);
   }
 
   @Override
   public void move(Position position) throws InvalidMovementException {
     if (!this.checkCastling(position)) {
-      System.err.println("Unable to castling");
       super.move(position);
 
       if (!this.firstMoved) {
         this.firstMoved = true;
       }
+
     } else {
-      System.err.println("Conditions to castling reached");
       try {
         this.castling(position);
-        try {
-          File soundFile = new File("./../assets/audio/castle.wav");
-          AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-          Clip clip = AudioSystem.getClip();
-          clip.open(audioIn);
-          clip.start(); // Start playing the sound
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ea) {
-          ea.printStackTrace();
+        Sound.playCastle();
+
+        if (!this.firstMoved) {
+          this.firstMoved = true;
         }
       } catch (InvalidPositionToAddPieceException e) {
-        System.err.println("Unable to castling");
       }
     }
   }
@@ -278,5 +269,9 @@ public class King extends Piece {
     }
 
     return false;
+  }
+
+  public King clone() {
+    return new King(this.color, this.firstMoved);
   }
 }
