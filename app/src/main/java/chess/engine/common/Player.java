@@ -1,10 +1,10 @@
-package chess.engine;
+package chess.engine.common;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import chess.table.pieces.King;
-import chess.table.pieces.Piece;
+import chess.engine.pieces.King;
+import chess.engine.pieces.Piece;
 import chess.utils.Color;
 
 public class Player {

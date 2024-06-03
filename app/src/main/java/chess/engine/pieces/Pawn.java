@@ -1,13 +1,13 @@
-package chess.table.pieces;
+package chess.engine.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import chess.engine.boards.Board;
 import chess.exceptions.InvalidMovementException;
 import chess.exceptions.InvalidPieceSwitchException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
-import chess.table.Board;
 import chess.utils.Color;
 import chess.utils.Position;
 

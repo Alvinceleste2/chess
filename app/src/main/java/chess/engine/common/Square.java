@@ -1,6 +1,6 @@
-package chess.table;
+package chess.engine.common;
 
-import chess.table.pieces.Piece;
+import chess.engine.pieces.Piece;
 
 public class Square {
   private Piece piece;

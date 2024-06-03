@@ -1,17 +1,17 @@
-package chess.table.pieces;
+package chess.engine.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import chess.engine.boards.Board;
 import chess.exceptions.InvalidPositionException;
-import chess.table.Board;
 import chess.utils.Color;
 import chess.utils.Position;
 
-public class Bishop extends Piece {
-  public Bishop(Color color) {
+public class Queen extends Piece {
+  public Queen(Color color) {
     super(color);
-    this.imagePath += this.color + "/Bishop.png";
+    this.imagePath += this.color + "/Queen.png";
   }
 
   @Override
@@ -19,6 +19,7 @@ public class Bishop extends Piece {
     List<Position> list = new ArrayList<>();
     Board board = Board.getInstance();
 
+    // First, the Bishop moves
     // UR branch
     try {
       for (int i = 1;; i++) {
@@ -30,7 +31,7 @@ public class Bishop extends Piece {
           continue;
         }
 
-        if (!piece.color.equals(this.color)) {
+        if (piece.color != this.color) {
           list.add(posUR);
         }
 
@@ -103,10 +104,95 @@ public class Bishop extends Piece {
       System.out.println("Checking position out of bounds");
     }
 
+    // Then, the Rook ones
+    // Check U
+    try {
+      for (int i = 1;; i++) {
+        Position posU = new Position(this.position.x, this.position.y + i);
+        Piece piece = board.getPieceAtSquare(posU);
+
+        if (piece == null) {
+          list.add(posU);
+          continue;
+        }
+
+        if (piece.color != this.color) {
+          list.add(posU);
+        }
+
+        break;
+      }
+    } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
+    }
+
+    // Check R
+    try {
+      for (int i = 1;; i++) {
+        Position posR = new Position(this.position.x + i, this.position.y);
+        Piece piece = board.getPieceAtSquare(posR);
+
+        if (piece == null) {
+          list.add(posR);
+          continue;
+        }
+
+        if (piece.color != this.color) {
+          list.add(posR);
+        }
+
+        break;
+      }
+    } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
+    }
+
+    // Check D
+    try {
+      for (int i = 1;; i++) {
+        Position posD = new Position(this.position.x, this.position.y - i);
+        Piece piece = board.getPieceAtSquare(posD);
+
+        if (piece == null) {
+          list.add(posD);
+          continue;
+        }
+
+        if (piece.color != this.color) {
+          list.add(posD);
+        }
+
+        break;
+      }
+    } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
+    }
+
+    // Check L
+    try {
+      for (int i = 1;; i++) {
+        Position posL = new Position(this.position.x - i, this.position.y);
+        Piece piece = board.getPieceAtSquare(posL);
+
+        if (piece == null) {
+          list.add(posL);
+          continue;
+        }
+
+        if (piece.color != this.color) {
+          list.add(posL);
+        }
+
+        break;
+      }
+    } catch (InvalidPositionException e) {
+      System.out.println("Checking position out of bounds");
+    }
+
     return list;
   }
 
-  public Bishop clone() {
-    return new Bishop(this.color);
+  public Queen clone() {
+    return new Queen(this.color);
   }
 }

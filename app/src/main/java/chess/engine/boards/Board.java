@@ -1,25 +1,27 @@
-package chess.table;
+package chess.engine.boards;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import chess.engine.common.Movement;
+import chess.engine.common.Player;
+import chess.engine.common.Square;
+import chess.engine.pieces.Bishop;
+import chess.engine.pieces.King;
+import chess.engine.pieces.Knight;
+import chess.engine.pieces.Pawn;
+import chess.engine.pieces.Piece;
+import chess.engine.pieces.Queen;
+import chess.engine.pieces.Rook;
 import chess.exceptions.InvalidPieceSwitchException;
 import chess.exceptions.InvalidPositionException;
 import chess.exceptions.InvalidPositionToAddPieceException;
 import chess.exceptions.InvalidRealocationException;
-import chess.table.pieces.Bishop;
-import chess.table.pieces.King;
-import chess.table.pieces.Knight;
-import chess.table.pieces.Pawn;
-import chess.table.pieces.Piece;
-import chess.table.pieces.Queen;
-import chess.table.pieces.Rook;
 import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
-import chess.engine.Movement;
 
 public class Board {
   public static int maxX = 8, maxY = 8;
@@ -27,15 +29,29 @@ public class Board {
   public static String imagePath = Assets.boardPath;
 
   private King whiteKing, blackKing;
+  private Player whitePlayer, blackPlayer;
+  private Player turn;
 
   private Square[][] squares;
   private Set<Piece> pieces;
   private List<Movement> movements;
 
   public Board() {
+    // Initialization of lists and sets
     this.pieces = new HashSet<>();
     this.movements = new ArrayList<>();
     this.squares = new Square[maxX][maxY];
+
+    // Creation of the players and their kings
+
+    King whiteKing = new King(Color.WHITE);
+    King blackKing = new King(Color.BLACK);
+
+    this.whiteKing = whiteKing;
+    this.blackKing = blackKing;
+
+    whitePlayer = new Player(Color.WHITE, whiteKing);
+    blackPlayer = new Player(Color.BLACK, blackKing);
 
     for (int i = 0; i < maxX; i++) {
       for (int j = 0; j < maxY; j++) {
@@ -51,11 +67,8 @@ public class Board {
     return boardInstance;
   }
 
-  public void boardInit(King whiteKing, King blackKing)
+  public void boardInit()
       throws InvalidPositionToAddPieceException, InvalidPositionException {
-
-    this.whiteKing = whiteKing;
-    this.blackKing = blackKing;
 
     // We add the pawns
     for (int i = 0; i < maxX; i++) {
@@ -78,7 +91,7 @@ public class Board {
     boardInstance.addPiece(new Bishop(Color.WHITE), new Position(5, 0));
 
     boardInstance.addPiece(new Queen(Color.WHITE), new Position(3, 0));
-    boardInstance.addPiece(whiteKing, new Position(4, 0));
+    boardInstance.addPiece(this.whiteKing, new Position(4, 0));
 
     // Black
     boardInstance.addPiece(new Rook(Color.BLACK), new Position(0, 7));
@@ -91,7 +104,7 @@ public class Board {
     boardInstance.addPiece(new Bishop(Color.BLACK), new Position(5, 7));
 
     boardInstance.addPiece(new Queen(Color.BLACK), new Position(3, 7));
-    boardInstance.addPiece(blackKing, new Position(4, 7));
+    boardInstance.addPiece(this.blackKing, new Position(4, 7));
   }
 
   public Piece getPieceAtSquare(Position position) {

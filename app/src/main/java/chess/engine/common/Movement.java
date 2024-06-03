@@ -1,6 +1,6 @@
-package chess.engine;
+package chess.engine.common;
 
-import chess.table.pieces.Piece;
+import chess.engine.pieces.Piece;
 import chess.utils.Position;
 
 public class Movement {

@@ -1,6 +1,6 @@
 package chess.exceptions;
 
-import chess.table.Board;
+import chess.engine.boards.Board;
 
 public class InvalidPositionException extends Exception {
   public InvalidPositionException(int x, int y) {
