@@ -59,6 +59,30 @@ public abstract class Sound {
     }
   }
 
+  public static void playPromote() {
+    try {
+      File soundFile = new File("./../assets/audio/promote.wav");
+      AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+      Clip clip = AudioSystem.getClip();
+      clip.open(audioIn);
+      clip.start(); // Start playing the sound
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ea) {
+      ea.printStackTrace();
+    }
+  }
+
+  public static void playCheck() {
+    try {
+      File soundFile = new File("./../assets/audio/move-check.wav");
+      AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+      Clip clip = AudioSystem.getClip();
+      clip.open(audioIn);
+      clip.start(); // Start playing the sound
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ea) {
+      ea.printStackTrace();
+    }
+  }
+
   public static void playEnd() {
     try {
       File soundFile = new File("./../assets/audio/game-end.wav");

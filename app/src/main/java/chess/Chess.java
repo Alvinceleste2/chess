@@ -40,8 +40,6 @@ public class Chess {
         mainPanel.setLayout(new GridBagLayout());
 
         mainFrame.add(mainPanel);
-
-        Chess.add(mainPanel, new TablePanel(), 0, 0, 3, 3, 0);
         // Chess.add(mainPanel, new GameDataPanel(), 4, 0, 2, 3, 0);
 
         // mainFrame.add(new TablePanel(), BorderLayout.CENTER);
@@ -49,36 +47,14 @@ public class Chess {
         // mainFrame.add(new ProfilePanel(), BorderLayout.SOUTH);
         // mainFrame.add(new GameDataPanel(), BorderLayout.EAST);
 
-        mainFrame.setSize(578, 578);
+        mainFrame.setSize(576, 576);
         mainFrame.setVisible(true);
       }
     });
-
   }
 
-  public static void add(JPanel panel, JComponent comp, int x, int y, int width, int height, int inset) {
-    /*
-     * Gridbag constrains
-     * gridx -> column of component
-     * gridy -> row of component
-     * gridwidth -> number of columns component spans
-     * gridheight -> number of rows component spans
-     * fill -> constant for remaining space
-     * anchor -> determines where to place if no fill
-     * Insets -> padding around a component
-     */
-    GridBagConstraints constr = new GridBagConstraints();
-    constr.gridx = x;
-    constr.gridy = y;
-    constr.weightx = 1.0;
-    constr.weighty = 1.0;
-    constr.gridheight = height;
-    constr.gridwidth = width;
-    constr.insets = new Insets(inset, inset, inset, inset);
-    constr.anchor = GridBagConstraints.CENTER;
-    constr.fill = GridBagConstraints.BOTH;
-    constr.ipadx = 15;
-    constr.ipady = 15;
-    panel.add(comp, constr);
+  private void initPanels() {
+    GridBagLayout gridBagLayout = new GridBagLayout();
+    GridBagConstraints gbc = new GridBagConstraints();
   }
 }

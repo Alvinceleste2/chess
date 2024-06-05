@@ -19,6 +19,7 @@ import chess.engine.pieces.Rook;
 import chess.engine.requests.CastlingReq;
 import chess.engine.requests.PromoteReq;
 import chess.engine.requests.Request;
+import chess.exceptions.CheckException;
 import chess.exceptions.CheckMateException;
 import chess.exceptions.CheckNotResolvedException;
 import chess.exceptions.IllegalMovementException;
@@ -176,7 +177,7 @@ public class Board {
   }
 
   private boolean move(Position start, Position end, boolean simulation)
-      throws IllegalMovementException, CheckNotResolvedException, CheckMateException {
+      throws IllegalMovementException, CheckNotResolvedException, CheckMateException, CheckException, Request {
     boolean capture = false;
     // Initial checks
     if (!simulation && (this.getSquare(start).isEmpty() || !this.isInTurn(this.getPieceAtSquare(start)))) {
@@ -203,8 +204,10 @@ public class Board {
 
     } catch (CastlingReq cr) {
       this.castling(start, end);
+      throw new CastlingReq();
     } catch (PromoteReq pr) {
       this.promote(start, end);
+      throw new PromoteReq();
     } catch (Request r) {
       System.out.println("This item should never be reached");
     }
@@ -218,7 +221,7 @@ public class Board {
   }
 
   public boolean move(Position start, Position end)
-      throws IllegalMovementException, CheckNotResolvedException, CheckMateException {
+      throws IllegalMovementException, CheckNotResolvedException, CheckMateException, CheckException, Request {
     return (this.move(start, end, false));
   }
 
@@ -236,7 +239,7 @@ public class Board {
   }
 
   private void promote(Position start, Position end) {
-    this.getSquare(end).setPiece(new Queen(this.getPieceAtSquare(start).getColor()));
+    this.addPiece(new Queen(this.getPieceAtSquare(start).getColor()), end);
     this.delPiece(this.getPieceAtSquare(start));
   }
 
@@ -244,7 +247,7 @@ public class Board {
     Board cloneBoard = this.clone();
     try {
       cloneBoard.move(start, end, true);
-    } catch (CheckMateException | IllegalMovementException e) {
+    } catch (CheckMateException | IllegalMovementException | Request | CheckException e) {
       System.out.println("This situation might not be possible");
     }
 
@@ -253,7 +256,7 @@ public class Board {
     }
   }
 
-  private void checkMate() throws CheckMateException {
+  private void checkMate() throws CheckException, CheckMateException {
     if (!this.turn.getKing().isInCheck()) {
       return;
     }
@@ -263,7 +266,7 @@ public class Board {
         for (Position pos : p.moveSet()) {
           try {
             this.simulateMove(p.getPosition(), pos);
-            return;
+            throw new CheckException();
           } catch (CheckNotResolvedException e) {
             continue;
           }

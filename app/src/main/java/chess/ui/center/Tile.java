@@ -20,6 +20,10 @@ import javax.swing.JPanel;
 
 import chess.engine.boards.Board;
 import chess.engine.common.Square;
+import chess.engine.requests.CastlingReq;
+import chess.engine.requests.PromoteReq;
+import chess.engine.requests.Request;
+import chess.exceptions.CheckException;
 import chess.exceptions.CheckMateException;
 import chess.exceptions.CheckNotResolvedException;
 import chess.exceptions.IllegalMovementException;
@@ -102,9 +106,6 @@ public class Tile extends JPanel {
               Sound.playMove();
             }
 
-            TablePanel.refresh();
-            TilesPanel.setSelectedTile(null);
-
           } catch (IllegalMovementException em) {
             Sound.playIllegal();
             TilesPanel.setSelectedTile(null).blinking();
@@ -113,9 +114,19 @@ public class Tile extends JPanel {
             TilesPanel.setSelectedTile(null);
             TilesPanel.getTiles()[cr.getKing().getPosition().x][cr.getKing().getPosition().y].blinking();
           } catch (CheckMateException cm) {
-            TablePanel.refresh();
             Sound.playEnd();
             JOptionPane.showMessageDialog(null, "CHECKMATE!");
+          } catch (CastlingReq cr) {
+            Sound.playCastle();
+          } catch (PromoteReq pr) {
+            Sound.playPromote();
+          } catch (CheckException ce) {
+            Sound.playCheck();
+          } catch (Request r) {
+
+          } finally {
+            TablePanel.refresh();
+            TilesPanel.setSelectedTile(null);
           }
         }
       }
