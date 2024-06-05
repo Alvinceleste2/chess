@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import chess.engine.common.Movement;
 import chess.engine.common.Player;
 import chess.engine.common.Square;
 import chess.engine.pieces.Bishop;
@@ -39,12 +38,10 @@ public class Board {
   private Square[][] squares;
   private Set<Piece> pieces;
   private Map<Color, List<Piece>> eaten;
-  private List<Movement> movements;
 
   private Board() {
     // Initialization of lists and sets
     this.pieces = new HashSet<>();
-    this.movements = new ArrayList<>();
     this.squares = new Square[maxX][maxY];
     this.eaten = new HashMap<>();
     this.eaten.put(Color.WHITE, new ArrayList<>());

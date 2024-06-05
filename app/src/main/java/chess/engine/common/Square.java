@@ -1,7 +1,6 @@
 package chess.engine.common;
 
 import chess.engine.pieces.Piece;
-import chess.utils.Position;
 
 public class Square {
   private Piece piece;
