@@ -25,6 +25,11 @@ public class Rook extends Piece {
     this(color, false, Board.getInstance());
   }
 
+  @Override
+  public void constraintsRefresh() {
+    this.firstMoved = true;
+  }
+
   public boolean getFirstMoved() {
     return this.firstMoved;
   }

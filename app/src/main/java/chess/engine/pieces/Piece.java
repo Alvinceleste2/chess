@@ -26,8 +26,8 @@ public abstract class Piece {
 
   public void die() {
     this.dead = true;
-    Board.getInstance().getEaten().get(this.color).add(this);
-    Board.getInstance().getPieces().remove(this);
+    this.board.getEaten().get(this.color).add(this);
+    this.board.getPieces().remove(this);
   }
 
   public Position getPosition() {
@@ -54,6 +54,9 @@ public abstract class Piece {
   public abstract List<Position> moveSet();
 
   public abstract Piece clone(Board board);
+
+  public void constraintsRefresh() {
+  }
 
   public Color getColor() {
     return this.color;

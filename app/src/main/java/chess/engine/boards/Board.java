@@ -53,7 +53,7 @@ public class Board {
 
     for (int i = 0; i < maxX; i++) {
       for (int j = 0; j < maxY; j++) {
-        this.squares[i][j] = new Square(null, new Position(i, j));
+        this.squares[i][j] = new Square(null);
       }
     }
   }
@@ -178,16 +178,19 @@ public class Board {
     this.turn = (this.turn.equals(whitePlayer)) ? this.blackPlayer : this.whitePlayer;
   }
 
-  public void move(Position start, Position end)
+  private boolean move(Position start, Position end, boolean simulation)
       throws IllegalMovementException, CheckNotResolvedException, CheckMateException {
+    boolean capture = false;
     // Initial checks
-    if (this.getSquare(start).isEmpty() || !this.isInTurn(this.getPieceAtSquare(start))) {
+    if (!simulation && (this.getSquare(start).isEmpty() || !this.isInTurn(this.getPieceAtSquare(start)))) {
       throw new IllegalMovementException();
     }
 
     try {
       // This throws CheckNotResolvedException if the movement ends in a check
-      this.simulateMove(start, end);
+      if (!simulation) {
+        this.simulateMove(start, end);
+      }
 
       // Check if the movement is legal. If true, catches the corresponding requests
       // for special movements
@@ -195,27 +198,39 @@ public class Board {
         throw new IllegalMovementException();
       }
 
+      capture = this.getSquare(end).isEmpty() ? false : true;
+
       this.getSquare(end).setPiece(this.getPieceAtSquare(start));
       this.getSquare(start).setEmpty();
+      this.getPieceAtSquare(end).constraintsRefresh();
 
     } catch (CastlingReq cr) {
       this.castling(start, end);
-      return;
     } catch (PromoteReq pr) {
       this.promote(start, end);
-      return;
     } catch (Request r) {
       System.out.println("This item should never be reached");
     }
 
-    this.next();
+    if (!simulation) {
+      this.next();
+      this.checkMate();
+    }
 
-    this.checkMate();
+    return capture;
+  }
+
+  public boolean move(Position start, Position end)
+      throws IllegalMovementException, CheckNotResolvedException, CheckMateException {
+    return (this.move(start, end, false));
   }
 
   private void castling(Position kingPos, Position rookPos) {
     double posXK = Math.ceil(((double) kingPos.x + (double) rookPos.x) / 2);
     double posXR = (kingPos.x > this.getPieceAtSquare(rookPos).getPosition().x) ? posXK + 1 : posXK - 1;
+
+    this.getPieceAtSquare(kingPos).constraintsRefresh();
+    this.getPieceAtSquare(rookPos).constraintsRefresh();
 
     this.getSquare(new Position((int) posXK, kingPos.y)).setPiece(this.getPieceAtSquare(kingPos));
     this.getSquare(new Position((int) posXR, kingPos.y)).setPiece(this.getPieceAtSquare(rookPos));
@@ -230,22 +245,16 @@ public class Board {
 
   private void simulateMove(Position start, Position end) throws CheckNotResolvedException {
     Board cloneBoard = this.clone();
-
-    System.out.println(cloneBoard.getPieceAtSquare(end));
-    System.out.println(cloneBoard.getPieceAtSquare(start));
-
-    cloneBoard.getSquare(end).setPiece(cloneBoard.getPieceAtSquare(start));
-    cloneBoard.getSquare(start).setEmpty();
-
-    System.out.println(cloneBoard.getPieceAtSquare(end));
-    System.out.println(cloneBoard.getPieceAtSquare(start));
+    try {
+      cloneBoard.move(start, end, true);
+    } catch (CheckMateException | IllegalMovementException e) {
+      System.out.println("This situation might not be possible");
+    }
 
     if (cloneBoard.kings.get(cloneBoard.turn.getColor()).isInCheck()) {
       throw new CheckNotResolvedException(cloneBoard.turn.getKing());
     }
   }
-
-  // private moveSim(Board clone, Position start, Position end){}
 
   private void checkMate() throws CheckMateException {
     if (!this.turn.getKing().isInCheck()) {
@@ -266,5 +275,23 @@ public class Board {
     }
 
     throw new CheckMateException();
+  }
+
+  public List<Position> getMovements(Position position) {
+    Piece piece = this.getPieceAtSquare(position);
+    List<Position> list = new ArrayList<>(piece.moveSet());
+    List<Position> toErase = new ArrayList<>();
+
+    for (Position pos : list) {
+      try {
+        simulateMove(position, pos);
+      } catch (CheckNotResolvedException e) {
+        toErase.add(pos);
+      }
+    }
+
+    list.removeAll(toErase);
+
+    return list;
   }
 }

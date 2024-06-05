@@ -23,6 +23,18 @@ public abstract class Sound {
     }
   }
 
+  public static void playCapture() {
+    try {
+      File soundFile = new File("./../assets/audio/capture.wav");
+      AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+      Clip clip = AudioSystem.getClip();
+      clip.open(audioIn);
+      clip.start(); // Start playing the sound
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ea) {
+      ea.printStackTrace();
+    }
+  }
+
   public static void playIllegal() {
     try {
       File soundFile = new File("./../assets/audio/illegal.wav");
@@ -38,6 +50,18 @@ public abstract class Sound {
   public static void playCastle() {
     try {
       File soundFile = new File("./../assets/audio/castle.wav");
+      AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+      Clip clip = AudioSystem.getClip();
+      clip.open(audioIn);
+      clip.start(); // Start playing the sound
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ea) {
+      ea.printStackTrace();
+    }
+  }
+
+  public static void playEnd() {
+    try {
+      File soundFile = new File("./../assets/audio/game-end.wav");
       AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
       Clip clip = AudioSystem.getClip();
       clip.open(audioIn);

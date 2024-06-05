@@ -31,6 +31,11 @@ public class King extends Piece {
   }
 
   @Override
+  public void constraintsRefresh() {
+    this.firstMoved = true;
+  }
+
+  @Override
   public boolean isValidMove(Position position) throws CastlingReq {
     if (this.moveSet().contains(position)) {
       if (this.checkCastling(position)) {

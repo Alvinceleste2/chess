@@ -26,6 +26,11 @@ public class Pawn extends Piece {
   }
 
   @Override
+  public void constraintsRefresh() {
+    this.firstMoved = true;
+  }
+
+  @Override
   public boolean isValidMove(Position position) throws PromoteReq {
     if (this.moveSet().contains(position)) {
       if (this.checkPromote()) {
@@ -95,9 +100,9 @@ public class Pawn extends Piece {
   private boolean checkPromote() {
     switch (this.color) {
       case Color.WHITE:
-        return this.getPosition().y == Board.maxY - 1;
+        return this.getPosition().y == Board.maxY - 2;
       default:
-        return this.getPosition().y == 0;
+        return this.getPosition().y == 1;
     }
   }
 

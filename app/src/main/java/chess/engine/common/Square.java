@@ -5,11 +5,9 @@ import chess.utils.Position;
 
 public class Square {
   private Piece piece;
-  private Position position;
 
-  public Square(Piece piece, Position position) {
+  public Square(Piece piece) {
     this.piece = piece;
-    this.position = position;
   }
 
   public Piece getPiece() {

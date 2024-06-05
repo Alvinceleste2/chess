@@ -83,8 +83,8 @@ public class Tile extends JPanel {
           }
 
           TilesPanel.setSelectedTile(tile);
-          // TilesPanel.showMovements(Board.getInstance().getPieceAtSquare(new
-          // Position(tile.x, tile.y)).calculateMovements());
+          TilesPanel
+              .showMovements(Board.getInstance().getMovements(new Position(tile.x, tile.y)));
           tile.repaint();
 
         } else if (TilesPanel.getSelectedTile().equals(tile)) {
@@ -96,21 +96,25 @@ public class Tile extends JPanel {
             Position startPos = new Position(TilesPanel.getSelectedTile().x, TilesPanel.getSelectedTile().y);
             Position finalPos = new Position(tile.x, tile.y);
 
-            Board.getInstance().move(startPos, finalPos);
-            Sound.playMove();
+            if (Board.getInstance().move(startPos, finalPos)) {
+              Sound.playCapture();
+            } else {
+              Sound.playMove();
+            }
 
             TablePanel.refresh();
             TilesPanel.setSelectedTile(null);
 
           } catch (IllegalMovementException em) {
             Sound.playIllegal();
-            em.printStackTrace();
             TilesPanel.setSelectedTile(null).blinking();
           } catch (CheckNotResolvedException cr) {
-            cr.printStackTrace();
+            Sound.playIllegal();
             TilesPanel.setSelectedTile(null);
             TilesPanel.getTiles()[cr.getKing().getPosition().x][cr.getKing().getPosition().y].blinking();
           } catch (CheckMateException cm) {
+            TablePanel.refresh();
+            Sound.playEnd();
             JOptionPane.showMessageDialog(null, "CHECKMATE!");
           }
         }
@@ -124,14 +128,14 @@ public class Tile extends JPanel {
       public void mouseEntered(MouseEvent e) {
         Tile tile = (Tile) e.getSource();
         tile.repaint();
-        System.out.println("entra");
+        // System.out.println("entra");
       }
 
       @Override
       public void mouseExited(MouseEvent e) {
         Tile tile = (Tile) e.getSource();
         tile.repaint();
-        System.out.println("sale");
+        // System.out.println("sale");
       }
 
       @Override
