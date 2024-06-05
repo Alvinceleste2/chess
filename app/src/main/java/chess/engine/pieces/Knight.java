@@ -3,88 +3,77 @@ package chess.engine.pieces;
 import java.util.ArrayList;
 import java.util.List;
 
-import chess.exceptions.InvalidPositionException;
+import chess.engine.boards.Board;
 import chess.utils.Color;
 import chess.utils.Position;
 
 public class Knight extends Piece {
-  public Knight(Color color) {
-    super(color);
+  public Knight(Color color, Board board) {
+    super(color, board);
     this.imagePath += this.color + "/Knight.png";
   }
 
+  public Knight(Color color) {
+    this(color, Board.getInstance());
+  }
+
   @Override
-  public List<Position> calculateMovements() {
+  public List<Position> moveSet() {
     List<Position> list = new ArrayList<>();
 
     // Check UUR
-    try {
-      Position posUUR = new Position(this.position.x + 1, this.position.y + 2);
+    Position posUUR = new Position(this.getPosition().x + 1, this.getPosition().y + 2);
+    if (posUUR.isValidPosition()) {
       list.add(posUUR);
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     // Check RRU
-    try {
-      Position posRRU = new Position(this.position.x + 2, this.position.y + 1);
+    Position posRRU = new Position(this.getPosition().x + 2, this.getPosition().y + 1);
+    if (posRRU.isValidPosition()) {
       list.add(posRRU);
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     // Check RRD
-    try {
-      Position posRRD = new Position(this.position.x + 2, this.position.y - 1);
+    Position posRRD = new Position(this.getPosition().x + 2, this.getPosition().y - 1);
+    if (posRRD.isValidPosition()) {
       list.add(posRRD);
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     // Check DDR
-    try {
-      Position posDDR = new Position(this.position.x + 1, this.position.y - 2);
+    Position posDDR = new Position(this.getPosition().x + 1, this.getPosition().y - 2);
+    if (posDDR.isValidPosition()) {
       list.add(posDDR);
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     // Check DDL
-    try {
-      Position posDDL = new Position(this.position.x - 1, this.position.y - 2);
+    Position posDDL = new Position(this.getPosition().x - 1, this.getPosition().y - 2);
+    if (posDDL.isValidPosition()) {
       list.add(posDDL);
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     // Check LLD
-    try {
-      Position posLLD = new Position(this.position.x - 2, this.position.y - 1);
+    Position posLLD = new Position(this.getPosition().x - 2, this.getPosition().y - 1);
+    if (posLLD.isValidPosition()) {
       list.add(posLLD);
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     // Check LLU
-    try {
-      Position posLLU = new Position(this.position.x - 2, this.position.y + 1);
+    Position posLLU = new Position(this.getPosition().x - 2, this.getPosition().y + 1);
+    if (posLLU.isValidPosition()) {
       list.add(posLLU);
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     // Check UUL
-    try {
-      Position posUUL = new Position(this.position.x - 1, this.position.y + 2);
+    Position posUUL = new Position(this.getPosition().x - 1, this.getPosition().y + 2);
+    if (posUUL.isValidPosition()) {
       list.add(posUUL);
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     return list;
   }
 
-  public Knight clone() {
-    return new Knight(this.color);
+  @Override
+  public Knight clone(Board board) {
+    return new Knight(this.color, board);
   }
 }

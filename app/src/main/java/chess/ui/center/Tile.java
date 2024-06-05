@@ -15,14 +15,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import chess.engine.GameEngine;
-import chess.exceptions.InvalidMovementException;
-import chess.exceptions.InvalidPositionException;
-import chess.table.Board;
-import chess.table.Square;
+import chess.engine.boards.Board;
+import chess.engine.common.Square;
+import chess.exceptions.CheckMateException;
+import chess.exceptions.CheckNotResolvedException;
+import chess.exceptions.IllegalMovementException;
 import chess.utils.Position;
+import chess.utils.Sound;
 
 public class Tile extends JPanel {
   private BufferedImage backgroundImage;
@@ -71,18 +73,18 @@ public class Tile extends JPanel {
         Tile tile = (Tile) e.getSource();
 
         if (TilesPanel.getSelectedTile() == null) {
-          Square sq = Board.getInstance().getSquare(Position.createPosition(tile.x, tile.y));
+          Square sq = Board.getInstance().getSquare(new Position(tile.x, tile.y));
           if (sq.isEmpty()) {
             return;
           }
 
-          if (!GameEngine.getInstance().checkTurn(sq.getPiece())) {
+          if (!Board.getInstance().isInTurn(sq.getPiece())) {
             return;
           }
 
           TilesPanel.setSelectedTile(tile);
-          TilesPanel.showMovements(
-              Board.getInstance().getPieceAtSquare(Position.createPosition(tile.x, tile.y)).calculateMovements());
+          // TilesPanel.showMovements(Board.getInstance().getPieceAtSquare(new
+          // Position(tile.x, tile.y)).calculateMovements());
           tile.repaint();
 
         } else if (TilesPanel.getSelectedTile().equals(tile)) {
@@ -94,15 +96,22 @@ public class Tile extends JPanel {
             Position startPos = new Position(TilesPanel.getSelectedTile().x, TilesPanel.getSelectedTile().y);
             Position finalPos = new Position(tile.x, tile.y);
 
-            Board.getInstance().getPieceAtSquare(startPos).move(finalPos);
+            Board.getInstance().move(startPos, finalPos);
+            Sound.playMove();
 
             TablePanel.refresh();
             TilesPanel.setSelectedTile(null);
 
-          } catch (InvalidPositionException ep) {
-
-          } catch (InvalidMovementException em) {
+          } catch (IllegalMovementException em) {
+            Sound.playIllegal();
+            em.printStackTrace();
             TilesPanel.setSelectedTile(null).blinking();
+          } catch (CheckNotResolvedException cr) {
+            cr.printStackTrace();
+            TilesPanel.setSelectedTile(null);
+            TilesPanel.getTiles()[cr.getKing().getPosition().x][cr.getKing().getPosition().y].blinking();
+          } catch (CheckMateException cm) {
+            JOptionPane.showMessageDialog(null, "CHECKMATE!");
           }
         }
       }
@@ -128,6 +137,7 @@ public class Tile extends JPanel {
       @Override
       public void mouseReleased(MouseEvent e) {
       }
+
     });
   }
 
@@ -149,7 +159,7 @@ public class Tile extends JPanel {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
 
-        if (Board.getInstance().getSquare(Position.createPosition(this.x, this.y)).isEmpty()) {
+        if (Board.getInstance().getSquare(new Position(this.x, this.y)).isEmpty()) {
           int r = Math.min(getWidth(), getHeight()) / 6;
 
           g.fillOval(centerX - r, centerY - r, r * 2, r * 2);

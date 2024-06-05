@@ -1,8 +1,10 @@
 package chess.engine.boards;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import chess.engine.common.Movement;
@@ -15,10 +17,12 @@ import chess.engine.pieces.Pawn;
 import chess.engine.pieces.Piece;
 import chess.engine.pieces.Queen;
 import chess.engine.pieces.Rook;
-import chess.exceptions.InvalidPieceSwitchException;
-import chess.exceptions.InvalidPositionException;
-import chess.exceptions.InvalidPositionToAddPieceException;
-import chess.exceptions.InvalidRealocationException;
+import chess.engine.requests.CastlingReq;
+import chess.engine.requests.PromoteReq;
+import chess.engine.requests.Request;
+import chess.exceptions.CheckMateException;
+import chess.exceptions.CheckNotResolvedException;
+import chess.exceptions.IllegalMovementException;
 import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -28,34 +32,28 @@ public class Board {
   private static Board boardInstance = null;
   public static String imagePath = Assets.boardPath;
 
-  private King whiteKing, blackKing;
+  private Map<Color, King> kings;
   private Player whitePlayer, blackPlayer;
   private Player turn;
 
   private Square[][] squares;
   private Set<Piece> pieces;
+  private Map<Color, List<Piece>> eaten;
   private List<Movement> movements;
 
-  public Board() {
+  private Board() {
     // Initialization of lists and sets
     this.pieces = new HashSet<>();
     this.movements = new ArrayList<>();
     this.squares = new Square[maxX][maxY];
-
-    // Creation of the players and their kings
-
-    King whiteKing = new King(Color.WHITE);
-    King blackKing = new King(Color.BLACK);
-
-    this.whiteKing = whiteKing;
-    this.blackKing = blackKing;
-
-    whitePlayer = new Player(Color.WHITE, whiteKing);
-    blackPlayer = new Player(Color.BLACK, blackKing);
+    this.eaten = new HashMap<>();
+    this.eaten.put(Color.WHITE, new ArrayList<>());
+    this.eaten.put(Color.BLACK, new ArrayList<>());
+    this.kings = new HashMap<>();
 
     for (int i = 0; i < maxX; i++) {
       for (int j = 0; j < maxY; j++) {
-        this.squares[i][j] = new Square(null);
+        this.squares[i][j] = new Square(null, new Position(i, j));
       }
     }
   }
@@ -67,8 +65,19 @@ public class Board {
     return boardInstance;
   }
 
-  public void boardInit()
-      throws InvalidPositionToAddPieceException, InvalidPositionException {
+  public void init() {
+    // Creation of the players and their kings
+
+    King whiteKing = new King(Color.WHITE, this);
+    King blackKing = new King(Color.BLACK, this);
+
+    this.kings.put(whiteKing.getColor(), whiteKing);
+    this.kings.put(blackKing.getColor(), blackKing);
+
+    whitePlayer = new Player(Color.WHITE, whiteKing);
+    blackPlayer = new Player(Color.BLACK, blackKing);
+
+    this.turn = this.whitePlayer;
 
     // We add the pawns
     for (int i = 0; i < maxX; i++) {
@@ -91,7 +100,7 @@ public class Board {
     boardInstance.addPiece(new Bishop(Color.WHITE), new Position(5, 0));
 
     boardInstance.addPiece(new Queen(Color.WHITE), new Position(3, 0));
-    boardInstance.addPiece(this.whiteKing, new Position(4, 0));
+    boardInstance.addPiece(this.kings.get(Color.WHITE), new Position(4, 0));
 
     // Black
     boardInstance.addPiece(new Rook(Color.BLACK), new Position(0, 7));
@@ -104,7 +113,7 @@ public class Board {
     boardInstance.addPiece(new Bishop(Color.BLACK), new Position(5, 7));
 
     boardInstance.addPiece(new Queen(Color.BLACK), new Position(3, 7));
-    boardInstance.addPiece(this.blackKing, new Position(4, 7));
+    boardInstance.addPiece(this.kings.get(Color.BLACK), new Position(4, 7));
   }
 
   public Piece getPieceAtSquare(Position position) {
@@ -115,47 +124,17 @@ public class Board {
     return this.squares[position.x][position.y];
   }
 
-  public void addPiece(Piece piece, Position position) throws InvalidPositionToAddPieceException {
-    if (!this.getSquare(position).isEmpty()) {
-      throw new InvalidPositionToAddPieceException();
-    }
-
+  public void addPiece(Piece piece, Position position) {
     this.squares[position.x][position.y].setPiece(piece);
-    piece.setPosition(position);
     this.pieces.add(piece);
-  }
-
-  public void switchPieces(Piece newPiece, Position position) throws InvalidPieceSwitchException {
-    if (newPiece == null || this.getSquare(position).isEmpty()) {
-      throw new InvalidPieceSwitchException();
-    }
-
-    this.getPieceAtSquare(position).die();
-
-    try {
-      this.addPiece(newPiece, position);
-    } catch (InvalidPositionToAddPieceException e) {
-
-    }
-  }
-
-  public void realocatePiece(Position start, Position end) throws InvalidRealocationException {
-    if (this.getSquare(start).isEmpty()) {
-      throw new InvalidRealocationException();
-    }
-
-    Piece p = this.getPieceAtSquare(start);
-
-    try {
-      this.addPiece(p, end);
-      this.getSquare(start).setEmpty();
-    } catch (InvalidPositionToAddPieceException e) {
-      throw new InvalidRealocationException();
-    }
   }
 
   public Set<Piece> getPieces() {
     return this.pieces;
+  }
+
+  public Map<Color, List<Piece>> getEaten() {
+    return this.eaten;
   }
 
   public void delPiece(Piece piece) {
@@ -163,24 +142,23 @@ public class Board {
     this.pieces.remove(piece);
   }
 
-  public void addMovement(Piece piece, Position startPos, Position endPos, boolean capture, boolean check) {
-    this.movements.add(new Movement(piece, startPos, endPos, capture, check));
-  }
-
-  public List<Movement> getMovements() {
-    return this.movements;
-  }
-
   public Board clone() {
     Board cloneBoard = new Board();
 
+    cloneBoard.turn = new Player(this.turn.getColor(), this.kings.get(this.turn.getColor()));
+
     for (int i = 0; i < Board.maxX; i++) {
       for (int j = 0; j < Board.maxY; j++) {
-        try {
-          Position pos = Position.createPosition(i, j);
-          cloneBoard.addPiece(this.getPieceAtSquare(pos).clone(), pos);
-        } catch (InvalidPositionToAddPieceException e) {
+        Position pos = new Position(i, j);
 
+        if (!this.getSquare(pos).isEmpty()) {
+          Piece clonedPiece = this.getPieceAtSquare(pos).clone(cloneBoard);
+          if (clonedPiece instanceof King) {
+            cloneBoard.kings.put(clonedPiece.getColor(), (King) clonedPiece);
+          }
+
+          cloneBoard.addPiece(clonedPiece, pos);
+          System.out.println(cloneBoard.getPieceAtSquare(pos));
         }
       }
     }
@@ -188,5 +166,105 @@ public class Board {
     return cloneBoard;
   }
 
-  // public String makeFEN() {}
+  public boolean isInTurn(Piece piece) {
+    return (piece.getColor().equals(this.turn.getColor())) ? true : false;
+  }
+
+  public boolean checkCheck() {
+    return this.turn.getKing().isInCheck();
+  }
+
+  public void next() {
+    this.turn = (this.turn.equals(whitePlayer)) ? this.blackPlayer : this.whitePlayer;
+  }
+
+  public void move(Position start, Position end)
+      throws IllegalMovementException, CheckNotResolvedException, CheckMateException {
+    // Initial checks
+    if (this.getSquare(start).isEmpty() || !this.isInTurn(this.getPieceAtSquare(start))) {
+      throw new IllegalMovementException();
+    }
+
+    try {
+      // This throws CheckNotResolvedException if the movement ends in a check
+      this.simulateMove(start, end);
+
+      // Check if the movement is legal. If true, catches the corresponding requests
+      // for special movements
+      if (!this.getPieceAtSquare(start).isValidMove(end)) {
+        throw new IllegalMovementException();
+      }
+
+      this.getSquare(end).setPiece(this.getPieceAtSquare(start));
+      this.getSquare(start).setEmpty();
+
+    } catch (CastlingReq cr) {
+      this.castling(start, end);
+      return;
+    } catch (PromoteReq pr) {
+      this.promote(start, end);
+      return;
+    } catch (Request r) {
+      System.out.println("This item should never be reached");
+    }
+
+    this.next();
+
+    this.checkMate();
+  }
+
+  private void castling(Position kingPos, Position rookPos) {
+    double posXK = Math.ceil(((double) kingPos.x + (double) rookPos.x) / 2);
+    double posXR = (kingPos.x > this.getPieceAtSquare(rookPos).getPosition().x) ? posXK + 1 : posXK - 1;
+
+    this.getSquare(new Position((int) posXK, kingPos.y)).setPiece(this.getPieceAtSquare(kingPos));
+    this.getSquare(new Position((int) posXR, kingPos.y)).setPiece(this.getPieceAtSquare(rookPos));
+    this.getSquare(kingPos).setEmpty();
+    this.getSquare(rookPos).setEmpty();
+  }
+
+  private void promote(Position start, Position end) {
+    this.getSquare(end).setPiece(new Queen(this.getPieceAtSquare(start).getColor()));
+    this.delPiece(this.getPieceAtSquare(start));
+  }
+
+  private void simulateMove(Position start, Position end) throws CheckNotResolvedException {
+    Board cloneBoard = this.clone();
+
+    System.out.println(cloneBoard.getPieceAtSquare(end));
+    System.out.println(cloneBoard.getPieceAtSquare(start));
+
+    cloneBoard.getSquare(end).setPiece(cloneBoard.getPieceAtSquare(start));
+    cloneBoard.getSquare(start).setEmpty();
+
+    System.out.println(cloneBoard.getPieceAtSquare(end));
+    System.out.println(cloneBoard.getPieceAtSquare(start));
+
+    if (cloneBoard.kings.get(cloneBoard.turn.getColor()).isInCheck()) {
+      throw new CheckNotResolvedException(cloneBoard.turn.getKing());
+    }
+  }
+
+  // private moveSim(Board clone, Position start, Position end){}
+
+  private void checkMate() throws CheckMateException {
+    if (!this.turn.getKing().isInCheck()) {
+      return;
+    }
+
+    for (Piece p : this.getPieces()) {
+      if (p.getColor().equals(this.turn.getKing().getColor())) {
+        for (Position pos : p.moveSet()) {
+          try {
+            this.simulateMove(p.getPosition(), pos);
+            return;
+          } catch (CheckNotResolvedException e) {
+            continue;
+          }
+        }
+      }
+    }
+
+    throw new CheckMateException();
+  }
 }

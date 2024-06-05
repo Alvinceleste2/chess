@@ -9,11 +9,10 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import chess.table.Board;
+import chess.engine.boards.Board;
 
 public class TablePanel extends JPanel {
   private static final double ASPECT_RATIO = 1.0 / 1.0;

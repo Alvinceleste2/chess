@@ -10,19 +10,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import chess.engine.GameEngine;
-import chess.exceptions.InvalidMovementException;
-import chess.exceptions.InvalidPositionException;
+import chess.engine.boards.Board;
 import chess.exceptions.InvalidPositionToAddPieceException;
 import chess.exceptions.InvalidThemeException;
-import chess.table.Board;
-import chess.ui.GameDataPanel;
 import chess.ui.center.TablePanel;
 import chess.utils.Assets;
 
 public class Chess {
-  public static void main(String[] args)
-      throws InvalidPositionException, InvalidPositionToAddPieceException, InvalidMovementException {
+  public static void main(String[] args) throws InvalidPositionToAddPieceException {
     System.out.println("Hello, World");
 
     try {
@@ -32,9 +27,8 @@ public class Chess {
       return;
     }
 
-    GameEngine ge = GameEngine.getInstance();
-    ge.init();
-    ge.start();
+    Board board = Board.getInstance();
+    board.init();
 
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {

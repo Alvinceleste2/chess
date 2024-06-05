@@ -5,36 +5,32 @@ import java.util.List;
 
 import chess.engine.boards.Board;
 import chess.engine.requests.CastlingReq;
+import chess.exceptions.InvalidPositionException;
+import chess.exceptions.InvalidPositionToAddPieceException;
+import chess.exceptions.InvalidRealocationException;
 import chess.utils.Color;
 import chess.utils.Position;
+import chess.utils.Sound;
 
 public class King extends Piece {
 
   private boolean firstMoved;
 
-  public King(Color color, boolean firstMoved, Board board) {
-    super(color, board);
+  public King(Color color, boolean firstMoved) {
+    super(color);
     this.firstMoved = firstMoved;
     this.imagePath += this.color + "/King.png";
   }
 
-  public King(Color color, boolean firstMoved) {
-    this(color, firstMoved, Board.getInstance());
-  }
-
-  public King(Color color, Board board) {
-    this(color, false, board);
-  }
-
   public King(Color color) {
-    this(color, false, Board.getInstance());
+    this(color, false);
   }
 
   @Override
   public boolean isValidMove(Position position) throws CastlingReq {
     if (this.moveSet().contains(position)) {
       if (this.checkCastling(position)) {
-        throw new CastlingReq();
+        throw new CastlingReq(position);
       }
       return true;
     }
@@ -71,6 +67,21 @@ public class King extends Piece {
     return true;
   }
 
+  public void castling(Position position) throws InvalidPositionToAddPieceException {
+    Board board = Board.getInstance();
+    double posXK = Math.ceil(((double) this.getPosition().x + (double) position.x) / 2);
+    double posXR = (this.getPosition().x > board.getPieceAtSquare(position).getPosition().x) ? posXK + 1 : posXK - 1;
+
+    System.out.println(posXK);
+
+    try {
+      board.realocatePiece(this.getPosition(), new Position((int) posXK, this.getPosition().y));
+      board.realocatePiece(position, new Position((int) posXR, this.getPosition().y));
+    } catch (InvalidRealocationException e) {
+
+    }
+  }
+
   @Override
   public List<Position> moveSet() {
     List<Position> list = new ArrayList<>();
@@ -84,16 +95,16 @@ public class King extends Piece {
 
   public List<Position> getMovements() {
     List<Position> list = new ArrayList<>();
-    Board board = this.board;
+    Board board = Board.getInstance();
     Piece piece;
 
     // First, we include every posible movement
 
     // U
     Position posU = new Position(this.getPosition().x, this.getPosition().y + 1);
+    piece = board.getPieceAtSquare(posU);
 
     if (posU.isValidPosition()) {
-      piece = board.getPieceAtSquare(posU);
       if (piece == null || piece.color != this.color) {
         list.add(posU);
       }
@@ -101,9 +112,9 @@ public class King extends Piece {
 
     // UR
     Position posUR = new Position(this.getPosition().x + 1, this.getPosition().y + 1);
+    piece = board.getPieceAtSquare(posUR);
 
     if (posUR.isValidPosition()) {
-      piece = board.getPieceAtSquare(posUR);
       if (piece == null || piece.color != this.color) {
         list.add(posUR);
       }
@@ -111,9 +122,9 @@ public class King extends Piece {
 
     // R
     Position posR = new Position(this.getPosition().x + 1, this.getPosition().y);
+    piece = board.getPieceAtSquare(posR);
 
     if (posR.isValidPosition()) {
-      piece = board.getPieceAtSquare(posR);
       if (piece == null || piece.color != this.color) {
         list.add(posR);
       }
@@ -121,9 +132,9 @@ public class King extends Piece {
 
     // DR
     Position posDR = new Position(this.getPosition().x + 1, this.getPosition().y - 1);
+    piece = board.getPieceAtSquare(posDR);
 
     if (posDR.isValidPosition()) {
-      piece = board.getPieceAtSquare(posDR);
       if (piece == null || piece.color != this.color) {
         list.add(posDR);
       }
@@ -131,9 +142,9 @@ public class King extends Piece {
 
     // D
     Position posD = new Position(this.getPosition().x, this.getPosition().y - 1);
+    piece = board.getPieceAtSquare(posD);
 
     if (posD.isValidPosition()) {
-      piece = board.getPieceAtSquare(posD);
       if (piece == null || piece.color != this.color) {
         list.add(posD);
       }
@@ -141,9 +152,9 @@ public class King extends Piece {
 
     // DL
     Position posDL = new Position(this.getPosition().x - 1, this.getPosition().y - 1);
+    piece = board.getPieceAtSquare(posDL);
 
     if (posDL.isValidPosition()) {
-      piece = board.getPieceAtSquare(posDL);
       if (piece == null || piece.color != this.color) {
         list.add(posDL);
       }
@@ -151,9 +162,9 @@ public class King extends Piece {
 
     // L
     Position posL = new Position(this.getPosition().x - 1, this.getPosition().y);
+    piece = board.getPieceAtSquare(posL);
 
     if (posL.isValidPosition()) {
-      piece = board.getPieceAtSquare(posL);
       if (piece == null || piece.color != this.color) {
         list.add(posL);
       }
@@ -161,9 +172,9 @@ public class King extends Piece {
 
     // UL
     Position posUL = new Position(this.getPosition().x - 1, this.getPosition().y + 1);
+    piece = board.getPieceAtSquare(posUL);
 
     if (posUL.isValidPosition()) {
-      piece = board.getPieceAtSquare(posUL);
       if (piece == null || piece.color != this.color) {
         list.add(posUL);
       }
@@ -176,7 +187,7 @@ public class King extends Piece {
     // The King can only move where there is no danger
     List<Position> posToErase = new ArrayList<>();
 
-    for (Piece p : this.board.getPieces()) {
+    for (Piece p : Board.getInstance().getPieces()) {
       if (p.color != this.color) {
         if (p instanceof King) {
           King k = (King) p;
@@ -220,7 +231,7 @@ public class King extends Piece {
 
   public boolean isInCheck() {
     for (Position p : this.getDanger()) {
-      if (p.equals(this.getPosition())) {
+      if (p.equals(this.position)) {
         return true;
       }
     }
@@ -228,8 +239,7 @@ public class King extends Piece {
     return false;
   }
 
-  @Override
-  public King clone(Board board) {
-    return new King(this.color, this.firstMoved, board);
+  public King clone() {
+    return new King(this.color, this.firstMoved);
   }
 }

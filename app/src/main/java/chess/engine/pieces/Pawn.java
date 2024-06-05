@@ -4,85 +4,71 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.boards.Board;
-import chess.exceptions.InvalidMovementException;
-import chess.exceptions.InvalidPieceSwitchException;
-import chess.exceptions.InvalidPositionException;
-import chess.exceptions.InvalidPositionToAddPieceException;
+import chess.engine.requests.PromoteReq;
 import chess.utils.Color;
 import chess.utils.Position;
 
 public class Pawn extends Piece {
   private boolean firstMoved;
 
-  public Pawn(Color color, boolean firstMoved) {
-    super(color);
+  public Pawn(Color color, boolean firstMoved, Board board) {
+    super(color, board);
     this.firstMoved = firstMoved;
     this.imagePath += this.color + "/Pawn.png";
   }
 
+  public Pawn(Color color, boolean firstMoved) {
+    this(color, firstMoved, Board.getInstance());
+  }
+
   public Pawn(Color color) {
-    this(color, false);
+    this(color, false, Board.getInstance());
   }
 
   @Override
-  public void move(Position position) throws InvalidMovementException {
-    super.move(position);
-
-    if (this.checkPromote()) {
-      try {
-        this.promote();
-      } catch (InvalidPositionToAddPieceException | InvalidPositionException | InvalidPieceSwitchException e) {
-        System.err.println("Unable to promote");
+  public boolean isValidMove(Position position) throws PromoteReq {
+    if (this.moveSet().contains(position)) {
+      if (this.checkPromote()) {
+        throw new PromoteReq();
       }
+
+      return true;
     }
 
-    if (!this.firstMoved) {
-      this.firstMoved = true;
-    }
+    return false;
   }
 
   @Override
-  public List<Position> calculateMovements() {
+  public List<Position> moveSet() {
     List<Position> list = new ArrayList<>();
-    Board board = Board.getInstance();
+    Board board = this.board;
 
     // Check forward movements
 
-    try {
-      Position posF = new Position(this.position.x, this.color.add(this.position.y, 1));
-      if (board.getPieceAtSquare(posF) == null) {
-        list.add(posF);
+    Position posF = new Position(this.getPosition().x, this.color.add(this.getPosition().y, 1));
+    if (posF.isValidPosition() && board.getPieceAtSquare(posF) == null) {
+      list.add(posF);
 
-        if (this.firstMoved == false) {
-          Position posFF = new Position(this.position.x, this.color.add(this.position.y, 2));
-          if (board.getPieceAtSquare(posFF) == null) {
-            list.add(posFF);
-          }
+      if (this.firstMoved == false) {
+        Position posFF = new Position(this.getPosition().x, this.color.add(this.getPosition().y, 2));
+        if (posFF.isValidPosition() && board.getPieceAtSquare(posFF) == null) {
+          list.add(posFF);
         }
       }
-
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     // Check diagonal movements
 
-    try {
-      Position posFL = new Position(this.color.add(this.position.x, -1), this.color.add(this.position.y, 1));
-      if (board.getPieceAtSquare(posFL) != null && board.getPieceAtSquare(posFL).color != this.color) {
-        list.add(posFL);
-      }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+    Position posFL = new Position(this.color.add(this.getPosition().x, -1), this.color.add(this.getPosition().y, 1));
+    if (posFL.isValidPosition() && board.getPieceAtSquare(posFL) != null
+        && board.getPieceAtSquare(posFL).color != this.color) {
+      list.add(posFL);
     }
 
-    try {
-      Position posFR = new Position(this.color.add(this.position.x, 1), this.color.add(this.position.y, 1));
-      if (board.getPieceAtSquare(posFR) != null && board.getPieceAtSquare(posFR).color != this.color) {
-        list.add(posFR);
-      }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+    Position posFR = new Position(this.color.add(this.getPosition().x, 1), this.color.add(this.getPosition().y, 1));
+    if (posFR.isValidPosition() && board.getPieceAtSquare(posFR) != null
+        && board.getPieceAtSquare(posFR).color != this.color) {
+      list.add(posFR);
     }
 
     return list;
@@ -91,20 +77,16 @@ public class Pawn extends Piece {
   public List<Position> getAttack() {
     List<Position> attackPos = new ArrayList<>();
 
-    try {
-      Position posFL = new Position(this.color.add(this.position.x, -1), this.color.add(this.position.y, 1));
+    Position posFL = new Position(this.color.add(this.getPosition().x, -1),
+        this.color.add(this.getPosition().y, 1));
+    if (posFL.isValidPosition()) {
       attackPos.add(posFL);
-
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
-    try {
-      Position posFR = new Position(this.color.add(this.position.x, 1), this.color.add(this.position.y, 1));
+    Position posFR = new Position(this.color.add(this.getPosition().x, 1),
+        this.color.add(this.getPosition().y, 1));
+    if (posFR.isValidPosition()) {
       attackPos.add(posFR);
-
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
 
     return attackPos;
@@ -113,18 +95,14 @@ public class Pawn extends Piece {
   private boolean checkPromote() {
     switch (this.color) {
       case Color.WHITE:
-        return this.position.y == Board.maxY - 1;
+        return this.getPosition().y == Board.maxY - 1;
       default:
-        return this.position.y == 0;
+        return this.getPosition().y == 0;
     }
   }
 
-  private void promote()
-      throws InvalidPositionException, InvalidPositionToAddPieceException, InvalidPieceSwitchException {
-    Board.getInstance().switchPieces(new Queen(this.color), this.position);
-  }
-
-  public Pawn clone() {
-    return new Pawn(this.color, this.firstMoved);
+  @Override
+  public Pawn clone(Board board) {
+    return new Pawn(this.color, this.firstMoved, board);
   }
 }

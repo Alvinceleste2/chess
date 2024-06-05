@@ -4,195 +4,207 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.boards.Board;
-import chess.exceptions.InvalidPositionException;
 import chess.utils.Color;
 import chess.utils.Position;
 
 public class Queen extends Piece {
-  public Queen(Color color) {
-    super(color);
+  public Queen(Color color, Board board) {
+    super(color, board);
     this.imagePath += this.color + "/Queen.png";
   }
 
+  public Queen(Color color) {
+    this(color, Board.getInstance());
+  }
+
   @Override
-  public List<Position> calculateMovements() {
+  public List<Position> moveSet() {
     List<Position> list = new ArrayList<>();
-    Board board = Board.getInstance();
+    Board board = this.board;
 
     // First, the Bishop moves
     // UR branch
-    try {
-      for (int i = 1;; i++) {
-        Position posUR = new Position(this.position.x + i, this.position.y + i);
-        Piece piece = board.getPieceAtSquare(posUR);
+    for (int i = 1;; i++) {
+      Position posUR = new Position(this.getPosition().x + i, this.getPosition().y + i);
 
-        if (piece == null) {
-          list.add(posUR);
-          continue;
-        }
-
-        if (piece.color != this.color) {
-          list.add(posUR);
-        }
-
+      if (!posUR.isValidPosition()) {
         break;
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+
+      Piece piece = board.getPieceAtSquare(posUR);
+
+      if (piece == null) {
+        list.add(posUR);
+        continue;
+      }
+
+      if (!piece.color.equals(this.color)) {
+        list.add(posUR);
+      }
+
+      break;
     }
 
     // DR branch
-    try {
-      for (int i = 1;; i++) {
-        Position posDR = new Position(this.position.x + i, this.position.y - i);
-        Piece piece = board.getPieceAtSquare(posDR);
+    for (int i = 1;; i++) {
+      Position posDR = new Position(this.getPosition().x + i, this.getPosition().y - i);
 
-        if (piece == null) {
-          list.add(posDR);
-          continue;
-        }
-
-        if (piece.color != this.color) {
-          list.add(posDR);
-        }
-
+      if (!posDR.isValidPosition()) {
         break;
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+
+      Piece piece = board.getPieceAtSquare(posDR);
+
+      if (piece == null) {
+        list.add(posDR);
+        continue;
+      }
+
+      if (!piece.color.equals(this.color)) {
+        list.add(posDR);
+      }
+
+      break;
     }
 
     // DL branch
-    try {
-      for (int i = 1;; i++) {
-        Position posDL = new Position(this.position.x - i, this.position.y - i);
-        Piece piece = board.getPieceAtSquare(posDL);
+    for (int i = 1;; i++) {
+      Position posDL = new Position(this.getPosition().x - i, this.getPosition().y - i);
 
-        if (piece == null) {
-          list.add(posDL);
-          continue;
-        }
-
-        if (piece.color != this.color) {
-          list.add(posDL);
-        }
-
+      if (!posDL.isValidPosition()) {
         break;
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+
+      Piece piece = board.getPieceAtSquare(posDL);
+
+      if (piece == null) {
+        list.add(posDL);
+        continue;
+      }
+
+      if (piece.color != this.color) {
+        list.add(posDL);
+      }
+
+      break;
     }
 
     // UL branch
-    try {
-      for (int i = 1;; i++) {
-        Position posUL = new Position(this.position.x - i, this.position.y + i);
-        Piece piece = board.getPieceAtSquare(posUL);
+    for (int i = 1;; i++) {
+      Position posUL = new Position(this.getPosition().x - i, this.getPosition().y + i);
 
-        if (piece == null) {
-          list.add(posUL);
-          continue;
-        }
-
-        if (piece.color != this.color) {
-          list.add(posUL);
-        }
-
+      if (!posUL.isValidPosition()) {
         break;
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+
+      Piece piece = board.getPieceAtSquare(posUL);
+
+      if (piece == null) {
+        list.add(posUL);
+        continue;
+      }
+
+      if (piece.color != this.color) {
+        list.add(posUL);
+      }
+
+      break;
     }
 
     // Then, the Rook ones
     // Check U
-    try {
-      for (int i = 1;; i++) {
-        Position posU = new Position(this.position.x, this.position.y + i);
-        Piece piece = board.getPieceAtSquare(posU);
+    for (int i = 1;; i++) {
+      Position posU = new Position(this.getPosition().x, this.getPosition().y + i);
 
-        if (piece == null) {
-          list.add(posU);
-          continue;
-        }
-
-        if (piece.color != this.color) {
-          list.add(posU);
-        }
-
+      if (!posU.isValidPosition()) {
         break;
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+
+      Piece piece = board.getPieceAtSquare(posU);
+
+      if (piece == null) {
+        list.add(posU);
+        continue;
+      }
+
+      if (piece.color != this.color) {
+        list.add(posU);
+      }
+
+      break;
     }
 
     // Check R
-    try {
-      for (int i = 1;; i++) {
-        Position posR = new Position(this.position.x + i, this.position.y);
-        Piece piece = board.getPieceAtSquare(posR);
+    for (int i = 1;; i++) {
+      Position posR = new Position(this.getPosition().x + i, this.getPosition().y);
 
-        if (piece == null) {
-          list.add(posR);
-          continue;
-        }
-
-        if (piece.color != this.color) {
-          list.add(posR);
-        }
-
+      if (!posR.isValidPosition()) {
         break;
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+
+      Piece piece = board.getPieceAtSquare(posR);
+
+      if (piece == null) {
+        list.add(posR);
+        continue;
+      }
+
+      if (piece.color != this.color) {
+        list.add(posR);
+      }
+
+      break;
     }
 
     // Check D
-    try {
-      for (int i = 1;; i++) {
-        Position posD = new Position(this.position.x, this.position.y - i);
-        Piece piece = board.getPieceAtSquare(posD);
+    for (int i = 1;; i++) {
+      Position posD = new Position(this.getPosition().x, this.getPosition().y - i);
 
-        if (piece == null) {
-          list.add(posD);
-          continue;
-        }
-
-        if (piece.color != this.color) {
-          list.add(posD);
-        }
-
+      if (!posD.isValidPosition()) {
         break;
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+
+      Piece piece = board.getPieceAtSquare(posD);
+
+      if (piece == null) {
+        list.add(posD);
+        continue;
+      }
+
+      if (piece.color != this.color) {
+        list.add(posD);
+      }
+
+      break;
     }
 
     // Check L
-    try {
-      for (int i = 1;; i++) {
-        Position posL = new Position(this.position.x - i, this.position.y);
-        Piece piece = board.getPieceAtSquare(posL);
+    for (int i = 1;; i++) {
+      Position posL = new Position(this.getPosition().x - i, this.getPosition().y);
 
-        if (piece == null) {
-          list.add(posL);
-          continue;
-        }
-
-        if (piece.color != this.color) {
-          list.add(posL);
-        }
-
+      if (!posL.isValidPosition()) {
         break;
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
+
+      Piece piece = board.getPieceAtSquare(posL);
+
+      if (piece == null) {
+        list.add(posL);
+        continue;
+      }
+
+      if (piece.color != this.color) {
+        list.add(posL);
+      }
+
+      break;
     }
 
     return list;
   }
 
-  public Queen clone() {
-    return new Queen(this.color);
+  @Override
+  public Queen clone(Board board) {
+    return new Queen(this.color, board);
   }
 }

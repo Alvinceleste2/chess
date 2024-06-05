@@ -1,7 +1,6 @@
 package chess.ui.center;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ComponentAdapter;
@@ -12,9 +11,8 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import chess.exceptions.InvalidPositionException;
-import chess.table.Board;
-import chess.table.pieces.Piece;
+import chess.engine.boards.Board;
+import chess.engine.pieces.Piece;
 import chess.utils.Assets;
 import chess.utils.Position;
 
@@ -58,27 +56,23 @@ public class TilesPanel extends JPanel {
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
 
-    try {
-      for (int i = 0; i < Board.maxX; i++) {
-        for (int j = 0; j < Board.maxY; j++) {
+    for (int i = 0; i < Board.maxX; i++) {
+      for (int j = 0; j < Board.maxY; j++) {
 
-          gbc.gridx = i;
-          gbc.gridy = Board.maxY - j - 1;
+        gbc.gridx = i;
+        gbc.gridy = Board.maxY - j - 1;
 
-          Piece piece = board.getPieceAtSquare(new Position(i, j));
-          Tile tile;
+        Piece piece = board.getPieceAtSquare(new Position(i, j));
+        Tile tile;
 
-          if (piece == null) {
-            tile = new Tile(Assets.blankPath, i, j);
-          } else {
-            tile = new Tile(board.getPieceAtSquare(new Position(i, j)).getImagePath(), i, j);
-          }
-
-          tilesPanel.add(tile, gbc);
+        if (piece == null) {
+          tile = new Tile(Assets.blankPath, i, j);
+        } else {
+          tile = new Tile(board.getPieceAtSquare(new Position(i, j)).getImagePath(), i, j);
         }
+
+        tilesPanel.add(tile, gbc);
       }
-    } catch (InvalidPositionException e) {
-      System.out.println("Checking position out of bounds");
     }
   };
 

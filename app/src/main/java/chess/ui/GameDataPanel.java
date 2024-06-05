@@ -8,8 +8,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import chess.engine.Movement;
-import chess.table.Board;
+import chess.engine.common.Movement;
 import chess.ui.components.TitlePanel;
 
 public class GameDataPanel extends JPanel {
