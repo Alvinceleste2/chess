@@ -32,7 +32,7 @@ public class TablePanel extends JPanel {
     this.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        enforceAspectRatio();
+        // enforceAspectRatio();
       }
     });
   }

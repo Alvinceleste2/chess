@@ -5,9 +5,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
@@ -35,7 +38,7 @@ public class TilesPanel extends JPanel {
       @Override
       public void componentResized(ComponentEvent e) {
         // TODO enforceAspectRatio
-        enforceAspectRatio();
+        // enforceAspectRatio();
       }
     });
   }
@@ -108,8 +111,16 @@ public class TilesPanel extends JPanel {
   }
 
   public static void refresh() {
-    tilesPanel.removeAll();
-    setTiles();
+    for (int i = 0; i < Board.maxX; i++) {
+      for (int j = 0; j < Board.maxY; j++) {
+        try {
+          tiles[i][j].setBackgroundImage();
+        } catch (IOException e) {
+          System.out.println("Couldn't load image");
+        }
+      }
+    }
+
     tilesPanel.revalidate();
     tilesPanel.repaint();
   }

@@ -7,13 +7,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import chess.engine.boards.Board;
-import chess.exceptions.InvalidPositionToAddPieceException;
 import chess.exceptions.InvalidThemeException;
 import chess.ui.center.TablePanel;
 import chess.utils.Assets;
 
 public class Chess {
-  public static void main(String[] args) throws InvalidPositionToAddPieceException {
+  public static void main(String[] args) {
     System.out.println("Hello, World");
 
     try {

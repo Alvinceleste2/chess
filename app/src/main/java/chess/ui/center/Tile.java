@@ -15,18 +15,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import chess.engine.boards.Board;
 import chess.engine.common.Square;
-import chess.engine.requests.CastlingReq;
-import chess.engine.requests.PromoteReq;
-import chess.engine.requests.Request;
-import chess.exceptions.CheckException;
-import chess.exceptions.CheckMateException;
-import chess.exceptions.CheckNotResolvedException;
-import chess.exceptions.IllegalMovementException;
+import chess.utils.Assets;
 import chess.utils.Position;
 import chess.utils.Sound;
 
@@ -55,18 +51,18 @@ public class Tile extends JPanel {
     this.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        enforceAspectRatio();
+        // enforceAspectRatio();
       }
     });
 
     this.addMouseMotionListener(new MouseMotionListener() {
 
       @Override
-      public void mouseDragged(MouseEvent arg0) {
+      public void mouseDragged(MouseEvent e) {
       }
 
       @Override
-      public void mouseMoved(MouseEvent arg0) {
+      public void mouseMoved(MouseEvent e) {
       }
 
     });
@@ -100,6 +96,7 @@ public class Tile extends JPanel {
           Position finalPos = new Position(tile.x, tile.y);
 
           int res = Board.getInstance().move(startPos, finalPos);
+          TilesPanel.refresh();
 
           switch (res) {
             case Board.ILLEGAL:
@@ -109,22 +106,18 @@ public class Tile extends JPanel {
 
             case Board.NORMAL:
               Sound.playMove();
-              TilesPanel.refresh();
               break;
 
             case Board.CAPTURE:
               Sound.playCapture();
-              TilesPanel.refresh();
               break;
 
             case Board.CASTLING:
               Sound.playCastle();
-              TilesPanel.refresh();
               break;
 
             case Board.PROMOTION:
               Sound.playPromote();
-              TilesPanel.refresh();
               break;
 
             case Board.CHECK_NOT_RESOLVED:
@@ -136,12 +129,11 @@ public class Tile extends JPanel {
 
             case Board.CHECK:
               Sound.playCheck();
-              TilesPanel.refresh();
               break;
 
             case Board.CHECKMATE:
               Sound.playEnd();
-              TilesPanel.refresh();
+              TilesPanel.setSelectedTile(null);
               JOptionPane.showMessageDialog(null, "CHECKMATE!");
               break;
           }
@@ -152,6 +144,10 @@ public class Tile extends JPanel {
 
       @Override
       public void mousePressed(MouseEvent e) {
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
       }
 
       @Override
@@ -166,10 +162,6 @@ public class Tile extends JPanel {
         Tile tile = (Tile) e.getSource();
         tile.repaint();
         // System.out.println("sale");
-      }
-
-      @Override
-      public void mouseReleased(MouseEvent e) {
       }
 
     });
@@ -221,10 +213,32 @@ public class Tile extends JPanel {
       this.blink = false;
       this.revalidate();
       this.repaint();
-    }, 250, TimeUnit.MILLISECONDS);
+    }, 150, TimeUnit.MILLISECONDS);
+
+    executor.schedule(() -> {
+      this.blink = true;
+      this.revalidate();
+      this.repaint();
+    }, 300, TimeUnit.MILLISECONDS);
+
+    executor.schedule(() -> {
+      this.blink = false;
+      this.revalidate();
+      this.repaint();
+      return;
+    }, 450, TimeUnit.MILLISECONDS);
   }
 
   private void enforceAspectRatio() {
     this.setSize(this.getParent().getWidth() / 9, this.getParent().getHeight() / 9);
+  }
+
+  public void setBackgroundImage() throws IOException {
+    if (!Board.getInstance().getSquare(new Position(x, y)).isEmpty()) {
+      this.backgroundImage = ImageIO
+          .read(new File(Board.getInstance().getPieceAtSquare(new Position(x, y)).getImagePath()));
+    } else {
+      this.backgroundImage = ImageIO.read(new File(Assets.blankPath));
+    }
   }
 }
