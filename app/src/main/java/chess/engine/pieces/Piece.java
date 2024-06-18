@@ -3,7 +3,6 @@ package chess.engine.pieces;
 import java.util.List;
 
 import chess.engine.boards.Board;
-import chess.engine.requests.Request;
 import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -47,8 +46,12 @@ public abstract class Piece {
     return this.imagePath;
   }
 
-  public boolean isValidMove(Position position) throws Request {
-    return this.moveSet().contains(position);
+  public int isValidMove(Position position) {
+    if (!this.moveSet().contains(position)) {
+      return Board.ILLEGAL;
+    } else {
+      return (Board.getInstance().getPieceAtSquare(position) == null) ? Board.NORMAL : Board.CAPTURE;
+    }
   }
 
   public abstract List<Position> moveSet();

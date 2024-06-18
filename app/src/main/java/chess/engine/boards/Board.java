@@ -16,13 +16,6 @@ import chess.engine.pieces.Pawn;
 import chess.engine.pieces.Piece;
 import chess.engine.pieces.Queen;
 import chess.engine.pieces.Rook;
-import chess.engine.requests.CastlingReq;
-import chess.engine.requests.PromoteReq;
-import chess.engine.requests.Request;
-import chess.exceptions.CheckException;
-import chess.exceptions.CheckMateException;
-import chess.exceptions.CheckNotResolvedException;
-import chess.exceptions.IllegalMovementException;
 import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -39,6 +32,9 @@ public class Board {
   private Square[][] squares;
   private Set<Piece> pieces;
   private Map<Color, List<Piece>> eaten;
+
+  public static final int NORMAL = 0, CAPTURE = 1, CASTLING = 2, PROMOTION = 3, ILLEGAL = 4, CHECK = 5,
+      CHECKMATE = 6, DRAW = 7, CHECK_NOT_RESOLVED = 8;
 
   private Board() {
     // Initialization of lists and sets
@@ -176,53 +172,73 @@ public class Board {
     this.turn = (this.turn.equals(whitePlayer)) ? this.blackPlayer : this.whitePlayer;
   }
 
-  private boolean move(Position start, Position end, boolean simulation)
-      throws IllegalMovementException, CheckNotResolvedException, CheckMateException, CheckException, Request {
-    boolean capture = false;
+  private int move(Position start, Position end, boolean simulation) {
     // Initial checks
     if (!simulation && (this.getSquare(start).isEmpty() || !this.isInTurn(this.getPieceAtSquare(start)))) {
-      throw new IllegalMovementException();
+      return ILLEGAL;
     }
 
-    try {
-      // This throws CheckNotResolvedException if the movement ends in a check
-      if (!simulation) {
-        this.simulateMove(start, end);
+    int ret = this.getPieceAtSquare(start).isValidMove(end);
+
+    if (ret == ILLEGAL) {
+      return ILLEGAL;
+    }
+
+    // This throws CheckNotResolvedException if the movement ends in a check
+    if (!simulation) {
+      if (this.simulateMoveEndsInCheck(start, end)) {
+        return CHECK_NOT_RESOLVED;
       }
+    }
 
-      // Check if the movement is legal. If true, catches the corresponding requests
-      // for special movements
-      if (!this.getPieceAtSquare(start).isValidMove(end)) {
-        throw new IllegalMovementException();
-      }
+    // Check if the movement is legal. If true, catches the corresponding requests
+    // for special movements
+    switch (ret) {
+      case NORMAL:
+        this.performMove(start, end);
+        break;
 
-      capture = this.getSquare(end).isEmpty() ? false : true;
+      case CAPTURE:
+        this.performMove(start, end);
+        break;
 
-      this.getSquare(end).setPiece(this.getPieceAtSquare(start));
-      this.getSquare(start).setEmpty();
-      this.getPieceAtSquare(end).constraintsRefresh();
+      case CASTLING:
+        this.castling(start, end);
+        break;
 
-    } catch (CastlingReq cr) {
-      this.castling(start, end);
-      throw new CastlingReq();
-    } catch (PromoteReq pr) {
-      this.promote(start, end);
-      throw new PromoteReq();
-    } catch (Request r) {
-      System.out.println("This item should never be reached");
+      case PROMOTION:
+        this.promote(start, end);
+        break;
     }
 
     if (!simulation) {
-      this.next();
-      this.checkMate();
+      int next = this.performNext();
+
+      switch (next) {
+        case NORMAL:
+          break;
+
+        default:
+          ret = next;
+      }
     }
 
-    return capture;
+    return ret;
   }
 
-  public boolean move(Position start, Position end)
-      throws IllegalMovementException, CheckNotResolvedException, CheckMateException, CheckException, Request {
+  public int move(Position start, Position end) {
     return (this.move(start, end, false));
+  }
+
+  private void performMove(Position start, Position end) {
+    this.getSquare(end).setPiece(this.getPieceAtSquare(start));
+    this.getSquare(start).setEmpty();
+    this.getPieceAtSquare(end).constraintsRefresh();
+  }
+
+  private int performNext() {
+    this.next();
+    return this.checkMate();
   }
 
   private void castling(Position kingPos, Position rookPos) {
@@ -243,38 +259,29 @@ public class Board {
     this.delPiece(this.getPieceAtSquare(start));
   }
 
-  private void simulateMove(Position start, Position end) throws CheckNotResolvedException {
+  private boolean simulateMoveEndsInCheck(Position start, Position end) {
     Board cloneBoard = this.clone();
-    try {
-      cloneBoard.move(start, end, true);
-    } catch (CheckMateException | IllegalMovementException | Request | CheckException e) {
-      System.out.println("This situation might not be possible");
-    }
+    cloneBoard.move(start, end, true);
 
-    if (cloneBoard.kings.get(cloneBoard.turn.getColor()).isInCheck()) {
-      throw new CheckNotResolvedException(cloneBoard.turn.getKing());
-    }
+    return cloneBoard.kings.get(cloneBoard.turn.getColor()).isInCheck();
   }
 
-  private void checkMate() throws CheckException, CheckMateException {
+  private int checkMate() {
     if (!this.turn.getKing().isInCheck()) {
-      return;
+      return NORMAL;
     }
 
     for (Piece p : this.getPieces()) {
       if (p.getColor().equals(this.turn.getKing().getColor())) {
         for (Position pos : p.moveSet()) {
-          try {
-            this.simulateMove(p.getPosition(), pos);
-            throw new CheckException();
-          } catch (CheckNotResolvedException e) {
-            continue;
+          if (!this.simulateMoveEndsInCheck(p.getPosition(), pos)) {
+            return CHECK;
           }
         }
       }
     }
 
-    throw new CheckMateException();
+    return CHECKMATE;
   }
 
   public List<Position> getMovements(Position position) {
@@ -283,9 +290,7 @@ public class Board {
     List<Position> toErase = new ArrayList<>();
 
     for (Position pos : list) {
-      try {
-        simulateMove(position, pos);
-      } catch (CheckNotResolvedException e) {
+      if (simulateMoveEndsInCheck(position, pos)) {
         toErase.add(pos);
       }
     }
@@ -293,5 +298,9 @@ public class Board {
     list.removeAll(toErase);
 
     return list;
+  }
+
+  public Player getTurn() {
+    return this.turn;
   }
 }

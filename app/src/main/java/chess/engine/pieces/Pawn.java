@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.boards.Board;
-import chess.engine.requests.PromoteReq;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -31,16 +30,15 @@ public class Pawn extends Piece {
   }
 
   @Override
-  public boolean isValidMove(Position position) throws PromoteReq {
+  public int isValidMove(Position position) {
     if (this.moveSet().contains(position)) {
       if (this.checkPromote()) {
-        throw new PromoteReq();
+        return Board.PROMOTION;
       }
-
-      return true;
+      return (Board.getInstance().getPieceAtSquare(position) == null) ? Board.NORMAL : Board.CAPTURE;
     }
 
-    return false;
+    return Board.ILLEGAL;
   }
 
   @Override

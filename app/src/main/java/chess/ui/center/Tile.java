@@ -96,38 +96,57 @@ public class Tile extends JPanel {
           tile.repaint();
 
         } else {
-          try {
-            Position startPos = new Position(TilesPanel.getSelectedTile().x, TilesPanel.getSelectedTile().y);
-            Position finalPos = new Position(tile.x, tile.y);
+          Position startPos = new Position(TilesPanel.getSelectedTile().x, TilesPanel.getSelectedTile().y);
+          Position finalPos = new Position(tile.x, tile.y);
 
-            if (Board.getInstance().move(startPos, finalPos)) {
-              Sound.playCapture();
-            } else {
+          int res = Board.getInstance().move(startPos, finalPos);
+
+          switch (res) {
+            case Board.ILLEGAL:
+              Sound.playIllegal();
+              TilesPanel.getSelectedTile().blinking();
+              break;
+
+            case Board.NORMAL:
               Sound.playMove();
-            }
+              TilesPanel.refresh();
+              break;
 
-          } catch (IllegalMovementException em) {
-            Sound.playIllegal();
-            TilesPanel.setSelectedTile(null).blinking();
-          } catch (CheckNotResolvedException cr) {
-            Sound.playIllegal();
-            TilesPanel.setSelectedTile(null);
-            TilesPanel.getTiles()[cr.getKing().getPosition().x][cr.getKing().getPosition().y].blinking();
-          } catch (CheckMateException cm) {
-            Sound.playEnd();
-            JOptionPane.showMessageDialog(null, "CHECKMATE!");
-          } catch (CastlingReq cr) {
-            Sound.playCastle();
-          } catch (PromoteReq pr) {
-            Sound.playPromote();
-          } catch (CheckException ce) {
-            Sound.playCheck();
-          } catch (Request r) {
+            case Board.CAPTURE:
+              Sound.playCapture();
+              TilesPanel.refresh();
+              break;
 
-          } finally {
-            TablePanel.refresh();
-            TilesPanel.setSelectedTile(null);
+            case Board.CASTLING:
+              Sound.playCastle();
+              TilesPanel.refresh();
+              break;
+
+            case Board.PROMOTION:
+              Sound.playPromote();
+              TilesPanel.refresh();
+              break;
+
+            case Board.CHECK_NOT_RESOLVED:
+              Sound.playIllegal();
+              TilesPanel.getTiles()[Board.getInstance().getTurn().getKing().getPosition().x][Board.getInstance()
+                  .getTurn().getKing()
+                  .getPosition().y].blinking();
+              break;
+
+            case Board.CHECK:
+              Sound.playCheck();
+              TilesPanel.refresh();
+              break;
+
+            case Board.CHECKMATE:
+              Sound.playEnd();
+              TilesPanel.refresh();
+              JOptionPane.showMessageDialog(null, "CHECKMATE!");
+              break;
           }
+
+          TilesPanel.setSelectedTile(null);
         }
       }
 

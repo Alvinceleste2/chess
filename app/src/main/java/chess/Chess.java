@@ -1,11 +1,7 @@
 package chess;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -39,7 +35,7 @@ public class Chess {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
 
-        mainFrame.add(mainPanel);
+        mainFrame.add(new TablePanel());
         // Chess.add(mainPanel, new GameDataPanel(), 4, 0, 2, 3, 0);
 
         // mainFrame.add(new TablePanel(), BorderLayout.CENTER);

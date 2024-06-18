@@ -20,53 +20,87 @@ public class Knight extends Piece {
   @Override
   public List<Position> moveSet() {
     List<Position> list = new ArrayList<>();
+    Board board = Board.getInstance();
+    Piece piece;
 
     // Check UUR
     Position posUUR = new Position(this.getPosition().x + 1, this.getPosition().y + 2);
     if (posUUR.isValidPosition()) {
-      list.add(posUUR);
+      piece = board.getPieceAtSquare(posUUR);
+
+      if (piece == null || !board.getPieceAtSquare(posUUR).getColor().equals(this.color)) {
+        list.add(posUUR);
+      }
     }
 
     // Check RRU
     Position posRRU = new Position(this.getPosition().x + 2, this.getPosition().y + 1);
     if (posRRU.isValidPosition()) {
-      list.add(posRRU);
+      piece = board.getPieceAtSquare(posRRU);
+
+      if (piece == null || !board.getPieceAtSquare(posRRU).getColor().equals(this.color)) {
+        list.add(posRRU);
+      }
     }
 
     // Check RRD
     Position posRRD = new Position(this.getPosition().x + 2, this.getPosition().y - 1);
     if (posRRD.isValidPosition()) {
-      list.add(posRRD);
+      piece = board.getPieceAtSquare(posRRD);
+
+      if (piece == null || !board.getPieceAtSquare(posRRD).getColor().equals(this.color)) {
+        list.add(posRRD);
+      }
     }
 
     // Check DDR
     Position posDDR = new Position(this.getPosition().x + 1, this.getPosition().y - 2);
     if (posDDR.isValidPosition()) {
-      list.add(posDDR);
+      piece = board.getPieceAtSquare(posDDR);
+
+      if (piece == null || !board.getPieceAtSquare(posDDR).getColor().equals(this.color)) {
+        list.add(posDDR);
+      }
     }
 
     // Check DDL
     Position posDDL = new Position(this.getPosition().x - 1, this.getPosition().y - 2);
     if (posDDL.isValidPosition()) {
-      list.add(posDDL);
+      piece = board.getPieceAtSquare(posDDL);
+
+      if (piece == null || !board.getPieceAtSquare(posDDL).getColor().equals(this.color)) {
+        list.add(posDDL);
+      }
     }
 
     // Check LLD
     Position posLLD = new Position(this.getPosition().x - 2, this.getPosition().y - 1);
     if (posLLD.isValidPosition()) {
-      list.add(posLLD);
+      piece = board.getPieceAtSquare(posLLD);
+
+      if (piece == null || !board.getPieceAtSquare(posLLD).getColor().equals(this.color)) {
+        list.add(posLLD);
+      }
     }
 
     // Check LLU
     Position posLLU = new Position(this.getPosition().x - 2, this.getPosition().y + 1);
     if (posLLU.isValidPosition()) {
-      list.add(posLLU);
+      piece = board.getPieceAtSquare(posLLU);
+
+      if (piece == null || !board.getPieceAtSquare(posLLU).getColor().equals(this.color)) {
+        list.add(posLLU);
+      }
     }
 
     // Check UUL
     Position posUUL = new Position(this.getPosition().x - 1, this.getPosition().y + 2);
     if (posUUL.isValidPosition()) {
-      list.add(posUUL);
+      piece = board.getPieceAtSquare(posUUL);
+
+      if (piece == null || !board.getPieceAtSquare(posUUL).getColor().equals(this.color)) {
+        list.add(posUUL);
+      }
     }
 
     return list;

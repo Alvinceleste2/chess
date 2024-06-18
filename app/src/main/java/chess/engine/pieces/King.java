@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.boards.Board;
-import chess.engine.requests.CastlingReq;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -36,14 +35,14 @@ public class King extends Piece {
   }
 
   @Override
-  public boolean isValidMove(Position position) throws CastlingReq {
+  public int isValidMove(Position position) {
     if (this.moveSet().contains(position)) {
       if (this.checkCastling(position)) {
-        throw new CastlingReq();
+        return Board.CASTLING;
       }
-      return true;
+      return (Board.getInstance().getPieceAtSquare(position) == null) ? Board.NORMAL : Board.CAPTURE;
     }
-    return false;
+    return Board.ILLEGAL;
   }
 
   private boolean checkCastling(Position position) {
