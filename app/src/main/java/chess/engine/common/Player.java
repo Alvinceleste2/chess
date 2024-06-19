@@ -25,4 +25,9 @@ public class Player {
   public King getKing() {
     return this.king;
   }
+
+  @Override
+  public String toString() {
+    return this.color + " player";
+  }
 }

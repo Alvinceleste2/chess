@@ -152,7 +152,6 @@ public class Board {
           }
 
           cloneBoard.addPiece(clonedPiece, pos);
-          System.out.println(cloneBoard.getPieceAtSquare(pos));
         }
       }
     }

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import chess.engine.boards.Board;
+import chess.engine.common.Timer;
 import chess.exceptions.InvalidThemeException;
 import chess.ui.center.TablePanel;
 import chess.utils.Assets;
@@ -21,6 +22,26 @@ public class Chess {
       System.out.println(e);
       return;
     }
+
+    Timer watch = new Timer(80, 3, 1);
+    Thread thread = new Thread(watch);
+    thread.start();
+
+    try {
+      Thread.sleep(4000);
+    } catch (Exception e) {
+
+    }
+
+    watch.stop();
+
+    try {
+      Thread.sleep(4000);
+    } catch (Exception e) {
+
+    }
+
+    watch.stop();
 
     Board board = Board.getInstance();
     board.init();
