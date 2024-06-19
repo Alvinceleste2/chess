@@ -2,6 +2,8 @@ package chess.engine.common;
 
 import java.security.InvalidParameterException;
 
+import chess.engine.boards.Board;
+
 public class Timer implements Runnable {
   private int seconds, elapsed, increment;
   private boolean active;
@@ -15,7 +17,7 @@ public class Timer implements Runnable {
     this.seconds = seconds;
     this.elapsed = 0;
     this.increment = increment;
-    this.active = true;
+    this.active = false;
     this.mode = mode;
   }
 
@@ -33,6 +35,8 @@ public class Timer implements Runnable {
         System.err.println(e);
       }
     }
+
+    Board.getInstance().endGame();
   }
 
   @Override
@@ -42,7 +46,7 @@ public class Timer implements Runnable {
   }
 
   public void stop() {
-    this.active = !this.active;
+    this.active = false;
 
     switch (this.mode) {
       case 0:
@@ -55,5 +59,9 @@ public class Timer implements Runnable {
     }
 
     System.err.println(this.active ? "Timer resumed" : "Timer stopped");
+  }
+
+  public void resume() {
+    this.active = true;
   }
 }

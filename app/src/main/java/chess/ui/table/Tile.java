@@ -1,4 +1,4 @@
-package chess.ui.center;
+package chess.ui.table;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -15,8 +15,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 

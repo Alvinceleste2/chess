@@ -7,9 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import chess.engine.boards.Board;
-import chess.engine.common.Timer;
 import chess.exceptions.InvalidThemeException;
-import chess.ui.center.TablePanel;
+import chess.ui.info.InfoPanel;
+import chess.ui.table.TablePanel;
 import chess.utils.Assets;
 
 public class Chess {
@@ -23,54 +23,31 @@ public class Chess {
       return;
     }
 
-    Timer watch = new Timer(80, 3, 1);
-    Thread thread = new Thread(watch);
-    thread.start();
-
-    try {
-      Thread.sleep(4000);
-    } catch (Exception e) {
-
-    }
-
-    watch.stop();
-
-    try {
-      Thread.sleep(4000);
-    } catch (Exception e) {
-
-    }
-
-    watch.stop();
-
     Board board = Board.getInstance();
     board.init();
 
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
+    SwingUtilities.invokeLater(() -> {
+      JFrame mainFrame = new JFrame();
+      mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      mainFrame.setLayout(new GridBagLayout());
 
-        JFrame mainFrame = new JFrame();
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      GridBagConstraints gbc = new GridBagConstraints();
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.weightx = 0.65;
+      gbc.weighty = 1.0;
 
-        mainFrame.add(new TablePanel());
-        // Chess.add(mainPanel, new GameDataPanel(), 4, 0, 2, 3, 0);
+      mainFrame.add(new TablePanel(), gbc);
 
-        // mainFrame.add(new TablePanel(), BorderLayout.CENTER);
-        // mainFrame.add(new ProfilePanel(), BorderLayout.NORTH);
-        // mainFrame.add(new ProfilePanel(), BorderLayout.SOUTH);
-        // mainFrame.add(new GameDataPanel(), BorderLayout.EAST);
+      gbc.gridx = 1;
+      gbc.weightx = 0.35;
+      gbc.weighty = 1.0;
 
-        mainFrame.setSize(576, 576);
-        mainFrame.setVisible(true);
-      }
+      mainFrame.add(new InfoPanel(), gbc);
+
+      mainFrame.setSize(576, 576);
+      mainFrame.setVisible(true);
     });
-  }
-
-  private void initPanels() {
-    GridBagLayout gridBagLayout = new GridBagLayout();
-    GridBagConstraints gbc = new GridBagConstraints();
   }
 }

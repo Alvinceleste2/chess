@@ -9,6 +9,7 @@ import java.util.Set;
 
 import chess.engine.common.Player;
 import chess.engine.common.Square;
+import chess.engine.common.Timer;
 import chess.engine.pieces.Bishop;
 import chess.engine.pieces.King;
 import chess.engine.pieces.Knight;
@@ -22,8 +23,10 @@ import chess.utils.Position;
 
 public class Board {
   public static int maxX = 8, maxY = 8;
-  private static Board boardInstance = null;
   public static String imagePath = Assets.boardPath;
+  private static Board boardInstance = null;
+
+  private boolean playing = false;
 
   private Map<Color, King> kings;
   private Player whitePlayer, blackPlayer;
@@ -34,7 +37,7 @@ public class Board {
   private Map<Color, List<Piece>> eaten;
 
   public static final int NORMAL = 0, CAPTURE = 1, CASTLING = 2, PROMOTION = 3, ILLEGAL = 4, CHECK = 5,
-      CHECKMATE = 6, DRAW = 7, CHECK_NOT_RESOLVED = 8;
+      CHECKMATE = 6, DRAW = 7, CHECK_NOT_RESOLVED = 8, NOT_PLAYING = 9;
 
   private Board() {
     // Initialization of lists and sets
@@ -68,8 +71,8 @@ public class Board {
     this.kings.put(whiteKing.getColor(), whiteKing);
     this.kings.put(blackKing.getColor(), blackKing);
 
-    whitePlayer = new Player(Color.WHITE, whiteKing);
-    blackPlayer = new Player(Color.BLACK, blackKing);
+    whitePlayer = new Player(Color.WHITE, whiteKing, new Timer(20, 0, 0));
+    blackPlayer = new Player(Color.BLACK, blackKing, new Timer(20, 0, 0));
 
     this.turn = this.whitePlayer;
 
@@ -108,6 +111,14 @@ public class Board {
 
     boardInstance.addPiece(new Queen(Color.BLACK), new Position(3, 7));
     boardInstance.addPiece(this.kings.get(Color.BLACK), new Position(4, 7));
+
+    whitePlayer.getTimer().resume();
+    Thread whiteThread = new Thread(whitePlayer.getTimer());
+    whiteThread.start();
+    Thread blackThread = new Thread(blackPlayer.getTimer());
+    blackThread.start();
+
+    this.playing = true;
   }
 
   public Piece getPieceAtSquare(Position position) {
@@ -139,7 +150,7 @@ public class Board {
   public Board clone() {
     Board cloneBoard = new Board();
 
-    cloneBoard.turn = new Player(this.turn.getColor(), this.kings.get(this.turn.getColor()));
+    cloneBoard.turn = new Player(this.turn.getColor(), this.kings.get(this.turn.getColor()), null);
 
     for (int i = 0; i < Board.maxX; i++) {
       for (int j = 0; j < Board.maxY; j++) {
@@ -168,11 +179,17 @@ public class Board {
   }
 
   public void next() {
+    this.turn.getTimer().stop();
     this.turn = (this.turn.equals(whitePlayer)) ? this.blackPlayer : this.whitePlayer;
+    this.turn.getTimer().resume();
   }
 
   private int move(Position start, Position end, boolean simulation) {
     // Initial checks
+    if (!this.playing) {
+      return NOT_PLAYING;
+    }
+
     if (!simulation && (this.getSquare(start).isEmpty() || !this.isInTurn(this.getPieceAtSquare(start)))) {
       return ILLEGAL;
     }
@@ -280,6 +297,8 @@ public class Board {
       }
     }
 
+    this.endGame();
+
     return CHECKMATE;
   }
 
@@ -301,5 +320,9 @@ public class Board {
 
   public Player getTurn() {
     return this.turn;
+  }
+
+  public void endGame() {
+    this.playing = false;
   }
 }

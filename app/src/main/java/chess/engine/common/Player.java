@@ -11,11 +11,13 @@ public class Player {
   private Color color;
   private List<Piece> eaten;
   private King king;
+  private Timer timer;
 
-  public Player(Color color, King king) {
+  public Player(Color color, King king, Timer timer) {
     this.eaten = new ArrayList<>();
     this.color = color;
     this.king = king;
+    this.timer = timer;
   }
 
   public Color getColor() {
@@ -24,6 +26,10 @@ public class Player {
 
   public King getKing() {
     return this.king;
+  }
+
+  public Timer getTimer() {
+    return this.timer;
   }
 
   @Override

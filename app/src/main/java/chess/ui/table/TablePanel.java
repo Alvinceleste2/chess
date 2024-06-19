@@ -1,4 +1,4 @@
-package chess.ui.center;
+package chess.ui.table;
 
 import java.awt.Color;
 import java.awt.Graphics;
