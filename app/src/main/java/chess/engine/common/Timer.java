@@ -1,13 +1,15 @@
 package chess.engine.common;
 
 import java.security.InvalidParameterException;
-
 import chess.engine.boards.Board;
+import chess.ui.info.TimerPanel;
+import chess.ui.info.TimerPanel.TimerBox;
 
 public class Timer implements Runnable {
   private int seconds, elapsed, increment;
   private boolean active;
   private final int mode; // 0 for Fischer; 1 for Bronstein
+  private TimerBox observer;
 
   public Timer(int seconds, int increment, int mode) {
     if ((seconds < 1) || (mode != 0 && mode != 1 && mode != 2)) {
@@ -21,11 +23,16 @@ public class Timer implements Runnable {
     this.mode = mode;
   }
 
+  public void setObserver(TimerBox observer) {
+    this.observer = observer;
+  }
+
   @Override
   public void run() {
     while (this.seconds > this.elapsed) {
       if (this.active) {
         this.elapsed++;
+        this.notification();
         System.err.println(this);
       }
 
@@ -58,10 +65,17 @@ public class Timer implements Runnable {
         break;
     }
 
+    this.notification();
     System.err.println(this.active ? "Timer resumed" : "Timer stopped");
   }
 
   public void resume() {
     this.active = true;
+  }
+
+  private void notification() {
+    if (this.observer != null) {
+      this.observer.update();
+    }
   }
 }

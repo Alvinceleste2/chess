@@ -29,7 +29,7 @@ public class Board {
   private boolean playing = false;
 
   private Map<Color, King> kings;
-  private Player whitePlayer, blackPlayer;
+  private List<Player> players;
   private Player turn;
 
   private Square[][] squares;
@@ -47,6 +47,7 @@ public class Board {
     this.eaten.put(Color.WHITE, new ArrayList<>());
     this.eaten.put(Color.BLACK, new ArrayList<>());
     this.kings = new HashMap<>();
+    this.players = new ArrayList<>();
 
     for (int i = 0; i < maxX; i++) {
       for (int j = 0; j < maxY; j++) {
@@ -62,20 +63,26 @@ public class Board {
     return boardInstance;
   }
 
-  public void init() {
-    // Creation of the players and their kings
-
+  public void initPlayers() {
     King whiteKing = new King(Color.WHITE, this);
     King blackKing = new King(Color.BLACK, this);
 
     this.kings.put(whiteKing.getColor(), whiteKing);
     this.kings.put(blackKing.getColor(), blackKing);
 
-    whitePlayer = new Player(Color.WHITE, whiteKing, new Timer(20, 0, 0));
-    blackPlayer = new Player(Color.BLACK, blackKing, new Timer(20, 0, 0));
+    this.players.add(new Player(Color.WHITE, whiteKing, new Timer(20, 0, 0)));
+    this.players.add(new Player(Color.BLACK, blackKing, new Timer(20, 0, 0)));
 
-    this.turn = this.whitePlayer;
+    this.turn = this.players.get(0);
 
+    this.players.get(0).getTimer().resume();
+    Thread whiteThread = new Thread(this.players.get(0).getTimer());
+    whiteThread.start();
+    Thread blackThread = new Thread(this.players.get(1).getTimer());
+    blackThread.start();
+  }
+
+  public void initPieces() {
     // We add the pawns
     for (int i = 0; i < maxX; i++) {
       boardInstance.addPiece(new Pawn(Color.WHITE), new Position(i, 1));
@@ -111,12 +118,13 @@ public class Board {
 
     boardInstance.addPiece(new Queen(Color.BLACK), new Position(3, 7));
     boardInstance.addPiece(this.kings.get(Color.BLACK), new Position(4, 7));
+  }
 
-    whitePlayer.getTimer().resume();
-    Thread whiteThread = new Thread(whitePlayer.getTimer());
-    whiteThread.start();
-    Thread blackThread = new Thread(blackPlayer.getTimer());
-    blackThread.start();
+  public void init() {
+    // Creation of the players and their kings
+    this.initPlayers();
+
+    this.initPieces();
 
     this.playing = true;
   }
@@ -180,7 +188,7 @@ public class Board {
 
   public void next() {
     this.turn.getTimer().stop();
-    this.turn = (this.turn.equals(whitePlayer)) ? this.blackPlayer : this.whitePlayer;
+    this.turn = this.players.get((this.players.indexOf(this.turn) + 1) % this.players.size());
     this.turn.getTimer().resume();
   }
 
@@ -324,5 +332,9 @@ public class Board {
 
   public void endGame() {
     this.playing = false;
+  }
+
+  public List<Player> getPlayers() {
+    return this.players;
   }
 }

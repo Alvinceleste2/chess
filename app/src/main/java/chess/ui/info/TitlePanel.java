@@ -1,4 +1,4 @@
-package chess.ui.components;
+package chess.ui.info;
 
 import java.awt.Font;
 
