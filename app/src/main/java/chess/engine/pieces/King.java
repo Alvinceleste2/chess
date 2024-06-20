@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.boards.Board;
+import chess.engine.common.GameStatus;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -11,22 +12,14 @@ public class King extends Piece {
 
   private boolean firstMoved;
 
-  public King(Color color, boolean firstMoved, Board board) {
-    super(color, board);
+  public King(Color color, boolean firstMoved) {
+    super(color);
     this.firstMoved = firstMoved;
     this.imagePath += this.color + "/King.png";
   }
 
-  public King(Color color, boolean firstMoved) {
-    this(color, firstMoved, Board.getInstance());
-  }
-
-  public King(Color color, Board board) {
-    this(color, false, board);
-  }
-
   public King(Color color) {
-    this(color, false, Board.getInstance());
+    this(color, false);
   }
 
   @Override
@@ -35,14 +28,14 @@ public class King extends Piece {
   }
 
   @Override
-  public int isValidMove(Position position) {
+  public GameStatus isValidMove(Position position) {
     if (this.moveSet().contains(position)) {
       if (this.checkCastling(position)) {
-        return Board.CASTLING;
+        return GameStatus.CASTLING;
       }
-      return (Board.getInstance().getPieceAtSquare(position) == null) ? Board.NORMAL : Board.CAPTURE;
+      return (Board.getInstance().getPieceAtSquare(position) == null) ? GameStatus.NORMAL : GameStatus.CAPTURE;
     }
-    return Board.ILLEGAL;
+    return GameStatus.ILLEGAL;
   }
 
   private boolean checkCastling(Position position) {
@@ -56,8 +49,7 @@ public class King extends Piece {
     Rook r = (Rook) piece;
     double posX = Math.ceil((this.getPosition().x + r.getPosition().x) / 2);
 
-    if (r.getFirstMoved() || this.firstMoved
-        || this.isDangerousPosition(new Position((int) posX, this.getPosition().y))) {
+    if (r.getFirstMoved() || this.firstMoved) {
       return false;
     }
 
@@ -80,7 +72,6 @@ public class King extends Piece {
     List<Position> list = new ArrayList<>();
 
     list.addAll(this.getMovements());
-    list.removeAll(this.getDanger());
     list.addAll(this.getCastling());
 
     return list;
@@ -205,7 +196,7 @@ public class King extends Piece {
     // We check if castling is possible
 
     Position posI = new Position(0, this.getPosition().y),
-        posD = new Position(Board.maxX - 1, this.getPosition().y);
+        posD = new Position(Board.getInstance().maxX - 1, this.getPosition().y);
 
     if (checkCastling(posI)) {
       list.add(posI);
@@ -216,10 +207,6 @@ public class King extends Piece {
     }
 
     return list;
-  }
-
-  public boolean isDangerousPosition(Position position) {
-    return this.getDanger().contains(position);
   }
 
   public boolean isInCheck() {
@@ -233,7 +220,7 @@ public class King extends Piece {
   }
 
   @Override
-  public King clone(Board board) {
-    return new King(this.color, this.firstMoved, board);
+  public King clone() {
+    return new King(this.color, this.firstMoved);
   }
 }

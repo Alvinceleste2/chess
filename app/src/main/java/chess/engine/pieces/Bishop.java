@@ -8,13 +8,9 @@ import chess.utils.Color;
 import chess.utils.Position;
 
 public class Bishop extends Piece {
-  public Bishop(Color color, Board board) {
-    super(color, board);
-    this.imagePath += this.color + "/Bishop.png";
-  }
-
   public Bishop(Color color) {
-    this(color, Board.getInstance());
+    super(color);
+    this.imagePath += this.color + "/Bishop.png";
   }
 
   @Override
@@ -114,7 +110,7 @@ public class Bishop extends Piece {
   }
 
   @Override
-  public Bishop clone(Board board) {
-    return new Bishop(this.color, board);
+  public Bishop clone() {
+    return new Bishop(this.color);
   }
 }

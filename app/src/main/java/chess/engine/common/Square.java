@@ -17,8 +17,6 @@ public class Square {
     this.piece = null;
   }
 
-  // TODO change every piece == null to isEmpty()
-
   public boolean isEmpty() {
     return this.piece == null;
   }

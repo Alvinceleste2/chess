@@ -4,24 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.boards.Board;
+import chess.engine.common.GameStatus;
 import chess.utils.Color;
 import chess.utils.Position;
 
 public class Pawn extends Piece {
   private boolean firstMoved;
 
-  public Pawn(Color color, boolean firstMoved, Board board) {
-    super(color, board);
+  public Pawn(Color color, boolean firstMoved) {
+    super(color);
     this.firstMoved = firstMoved;
     this.imagePath += this.color + "/Pawn.png";
   }
 
-  public Pawn(Color color, boolean firstMoved) {
-    this(color, firstMoved, Board.getInstance());
-  }
-
   public Pawn(Color color) {
-    this(color, false, Board.getInstance());
+    this(color, false);
   }
 
   @Override
@@ -30,15 +27,15 @@ public class Pawn extends Piece {
   }
 
   @Override
-  public int isValidMove(Position position) {
+  public GameStatus isValidMove(Position position) {
     if (this.moveSet().contains(position)) {
       if (this.checkPromote()) {
-        return Board.PROMOTION;
+        return GameStatus.PROMOTION;
       }
-      return (Board.getInstance().getPieceAtSquare(position) == null) ? Board.NORMAL : Board.CAPTURE;
+      return (Board.getInstance().getPieceAtSquare(position) == null) ? GameStatus.NORMAL : GameStatus.CAPTURE;
     }
 
-    return Board.ILLEGAL;
+    return GameStatus.ILLEGAL;
   }
 
   @Override
@@ -98,14 +95,14 @@ public class Pawn extends Piece {
   private boolean checkPromote() {
     switch (this.color) {
       case Color.WHITE:
-        return this.getPosition().y == Board.maxY - 2;
+        return this.getPosition().y == Board.getInstance().maxY - 2;
       default:
         return this.getPosition().y == 1;
     }
   }
 
   @Override
-  public Pawn clone(Board board) {
-    return new Pawn(this.color, this.firstMoved, board);
+  public Pawn clone() {
+    return new Pawn(this.color, this.firstMoved);
   }
 }

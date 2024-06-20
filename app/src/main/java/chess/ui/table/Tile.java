@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import chess.engine.boards.Board;
+import chess.engine.common.GameStatus;
 import chess.engine.common.Square;
 import chess.utils.Assets;
 import chess.utils.Position;
@@ -93,46 +94,49 @@ public class Tile extends JPanel {
           Position startPos = new Position(TilesPanel.getSelectedTile().x, TilesPanel.getSelectedTile().y);
           Position finalPos = new Position(tile.x, tile.y);
 
-          int res = Board.getInstance().move(startPos, finalPos);
+          GameStatus res = Board.getInstance().move(startPos, finalPos);
           TilesPanel.refresh();
 
           switch (res) {
-            case Board.ILLEGAL:
+            case GameStatus.ILLEGAL:
               Sound.playIllegal();
               TilesPanel.getSelectedTile().blinking();
               break;
 
-            case Board.NORMAL:
+            case GameStatus.NORMAL:
               Sound.playMove();
               break;
 
-            case Board.CAPTURE:
+            case GameStatus.CAPTURE:
               Sound.playCapture();
               break;
 
-            case Board.CASTLING:
+            case GameStatus.CASTLING:
               Sound.playCastle();
               break;
 
-            case Board.PROMOTION:
+            case GameStatus.PROMOTION:
               Sound.playPromote();
               break;
 
-            case Board.CHECK_NOT_RESOLVED:
+            case GameStatus.CHECK_NOT_RESOLVED:
               Sound.playIllegal();
               TilesPanel.getTiles()[Board.getInstance().getTurn().getKing().getPosition().x][Board.getInstance()
                   .getTurn().getKing()
                   .getPosition().y].blinking();
               break;
 
-            case Board.CHECK:
+            case GameStatus.CHECK:
               Sound.playCheck();
               break;
 
-            case Board.CHECKMATE:
+            case GameStatus.CHECKMATE:
               Sound.playEnd();
               TilesPanel.setSelectedTile(null);
               JOptionPane.showMessageDialog(null, "CHECKMATE!");
+              break;
+
+            default:
               break;
           }
 

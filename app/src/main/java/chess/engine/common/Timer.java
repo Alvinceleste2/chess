@@ -1,8 +1,8 @@
 package chess.engine.common;
 
 import java.security.InvalidParameterException;
+
 import chess.engine.boards.Board;
-import chess.ui.info.TimerPanel;
 import chess.ui.info.TimerPanel.TimerBox;
 
 public class Timer implements Runnable {
@@ -21,6 +21,10 @@ public class Timer implements Runnable {
     this.increment = increment;
     this.active = false;
     this.mode = mode;
+  }
+
+  public Timer(TimerConstraints tc) {
+    this(tc.seconds, tc.increment, tc.mode);
   }
 
   public void setObserver(TimerBox observer) {

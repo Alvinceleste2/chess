@@ -28,6 +28,8 @@ public class Position {
   }
 
   public boolean isValidPosition() {
-    return (this.x >= Board.maxX || this.x < 0 || this.y >= Board.maxY || this.y < 0) ? false : true;
+    return (this.x >= Board.getInstance().maxX || this.x < 0 || this.y >= Board.getInstance().maxY || this.y < 0)
+        ? false
+        : true;
   }
 }

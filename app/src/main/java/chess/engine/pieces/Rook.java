@@ -11,18 +11,14 @@ public class Rook extends Piece {
 
   private boolean firstMoved;
 
-  public Rook(Color color, boolean firstMoved, Board board) {
-    super(color, board);
+  public Rook(Color color, boolean firstMoved) {
+    super(color);
     this.firstMoved = firstMoved;
     this.imagePath += this.color + "/Rook.png";
   }
 
-  public Rook(Color color, boolean firstMoved) {
-    this(color, firstMoved, Board.getInstance());
-  }
-
   public Rook(Color color) {
-    this(color, false, Board.getInstance());
+    this(color, false);
   }
 
   @Override
@@ -131,7 +127,7 @@ public class Rook extends Piece {
   }
 
   @Override
-  public Rook clone(Board board) {
-    return new Rook(this.color, this.firstMoved, board);
+  public Rook clone() {
+    return new Rook(this.color, this.firstMoved);
   }
 }

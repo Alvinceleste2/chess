@@ -1,7 +1,5 @@
 package chess.ui.info;
 
-import java.awt.Font;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;

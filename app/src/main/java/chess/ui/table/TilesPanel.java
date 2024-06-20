@@ -29,7 +29,7 @@ public class TilesPanel extends JPanel {
     this.setOpaque(false);
     this.setBorder(BorderFactory.createEmptyBorder(32, 32, 32, 32));
 
-    tiles = new Tile[Board.maxX][Board.maxY];
+    tiles = new Tile[Board.getInstance().maxX][Board.getInstance().maxY];
     selectedTileMovements = new ArrayList<>();
 
     this.addComponentListener(new ComponentAdapter() {
@@ -57,11 +57,11 @@ public class TilesPanel extends JPanel {
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
 
-    for (int i = 0; i < Board.maxX; i++) {
-      for (int j = 0; j < Board.maxY; j++) {
+    for (int i = 0; i < Board.getInstance().maxX; i++) {
+      for (int j = 0; j < Board.getInstance().maxY; j++) {
 
         gbc.gridx = i;
-        gbc.gridy = Board.maxY - j - 1;
+        gbc.gridy = Board.getInstance().maxY - j - 1;
 
         Piece piece = board.getPieceAtSquare(new Position(i, j));
         Tile tile;
@@ -109,8 +109,8 @@ public class TilesPanel extends JPanel {
   }
 
   public static void refresh() {
-    for (int i = 0; i < Board.maxX; i++) {
-      for (int j = 0; j < Board.maxY; j++) {
+    for (int i = 0; i < Board.getInstance().maxX; i++) {
+      for (int j = 0; j < Board.getInstance().maxY; j++) {
         try {
           tiles[i][j].setBackgroundImage();
         } catch (IOException e) {

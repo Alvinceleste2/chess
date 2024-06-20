@@ -8,13 +8,9 @@ import chess.utils.Color;
 import chess.utils.Position;
 
 public class Queen extends Piece {
-  public Queen(Color color, Board board) {
-    super(color, board);
-    this.imagePath += this.color + "/Queen.png";
-  }
-
   public Queen(Color color) {
-    this(color, Board.getInstance());
+    super(color);
+    this.imagePath += this.color + "/Queen.png";
   }
 
   @Override
@@ -204,7 +200,7 @@ public class Queen extends Piece {
   }
 
   @Override
-  public Queen clone(Board board) {
-    return new Queen(this.color, board);
+  public Queen clone() {
+    return new Queen(this.color);
   }
 }

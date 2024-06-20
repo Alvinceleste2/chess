@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import chess.engine.boards.Board;
+import chess.utils.Assets;
 
 public class TablePanel extends JPanel {
   private static final double ASPECT_RATIO = 1.0 / 1.0;
@@ -20,7 +20,7 @@ public class TablePanel extends JPanel {
 
   public TablePanel() {
     try {
-      backgroundImage = ImageIO.read(new File(Board.imagePath));
+      backgroundImage = ImageIO.read(new File(Assets.boardPath));
     } catch (IOException e) {
       e.printStackTrace();
     }
