@@ -1,14 +1,27 @@
 package chess.ui.info;
 
-import javax.swing.BoxLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
 import javax.swing.JPanel;
 
 public class InfoPanel extends JPanel {
   public InfoPanel() {
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    this.setLayout(new GridBagLayout());
 
-    this.add(new TitlePanel("Chess"));
-    this.add(new TimerPanel());
-    this.add(new MovementHistoryPanel());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.BOTH;
+    gbc.weightx = 1.0;
+    gbc.weighty = 1.0;
+
+    gbc.gridy = 0;
+
+    this.add(new TitlePanel("Chess"), gbc);
+
+    gbc.gridy = 2;
+    this.add(new TimerPanel(), gbc);
+
+    gbc.gridy = 4;
+    this.add(new MovementHistoryPanel(), gbc);
   }
 }

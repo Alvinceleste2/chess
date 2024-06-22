@@ -2,10 +2,14 @@ package chess.ui.info;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.CompoundBorder;
 
 import chess.engine.boards.Board;
 import chess.engine.common.Timer;
@@ -15,6 +19,7 @@ public class TimerPanel extends JPanel {
   public TimerPanel() {
     this.setLayout(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.BOTH;
 
     gbc.gridx = 0;
     gbc.weightx = 1.0;
@@ -30,7 +35,7 @@ public class TimerPanel extends JPanel {
   }
 
   public class TimerBox extends JPanel {
-    JLabel nameLabel, timeLabel;
+    JLabel timeLabel;
     Timer timer;
 
     TimerBox(Timer timer, Color color) {
@@ -38,8 +43,8 @@ public class TimerPanel extends JPanel {
       this.timer = timer;
       this.timer.setObserver(this);
 
-      nameLabel = new JLabel(color.toString());
-      this.add(nameLabel);
+      this.setBorder(new CompoundBorder(
+          BorderFactory.createEmptyBorder(0, 0, 0, 0), BorderFactory.createTitledBorder(color.toString())));
 
       timeLabel = new JLabel(timer.toString());
       this.add(timeLabel);

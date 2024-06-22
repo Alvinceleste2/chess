@@ -147,8 +147,11 @@ public class ClassicBoard extends Board {
         break;
     }
 
+    List<GameStatus> mov = new ArrayList<>();
+
     if (!simulation) {
       GameStatus next = this.performNext();
+      mov.add(ret);
 
       switch (next) {
         case GameStatus.NORMAL:
@@ -157,10 +160,12 @@ public class ClassicBoard extends Board {
         default:
           ret = next;
       }
-    }
 
-    this.movements.add(new Movement(this.getPieceAtSquare(end), start, end, ret));
-    MovementHistoryPanel.refreshMovements();
+      mov.add(next);
+
+      this.movements.add(new Movement(this.getPieceAtSquare(end), start, end, mov));
+      MovementHistoryPanel.refreshMovements();
+    }
 
     return ret;
   }
