@@ -106,4 +106,9 @@ public class Knight extends Piece {
   public Knight clone() {
     return new Knight(this.color);
   }
+
+  @Override
+  public String toString() {
+    return "N";
+  }
 }

@@ -9,5 +9,6 @@ public class InfoPanel extends JPanel {
 
     this.add(new TitlePanel("Chess"));
     this.add(new TimerPanel());
+    this.add(new MovementHistoryPanel());
   }
 }

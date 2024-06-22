@@ -223,4 +223,9 @@ public class King extends Piece {
   public King clone() {
     return new King(this.color, this.firstMoved);
   }
+
+  @Override
+  public String toString() {
+    return "K";
+  }
 }

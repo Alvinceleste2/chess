@@ -10,8 +10,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import chess.engine.common.Player;
 import chess.utils.Assets;
 
 public class TablePanel extends JPanel {
@@ -67,5 +69,9 @@ public class TablePanel extends JPanel {
 
   public static void refresh() {
     TilesPanel.refresh();
+  }
+
+  public static void showVictoryWin(Player winner) {
+    JOptionPane.showMessageDialog(null, winner.getColor() + " player wins!");
   }
 }

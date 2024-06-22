@@ -113,4 +113,9 @@ public class Bishop extends Piece {
   public Bishop clone() {
     return new Bishop(this.color);
   }
+
+  @Override
+  public String toString() {
+    return "B";
+  }
 }

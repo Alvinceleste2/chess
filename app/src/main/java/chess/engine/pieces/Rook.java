@@ -130,4 +130,9 @@ public class Rook extends Piece {
   public Rook clone() {
     return new Rook(this.color, this.firstMoved);
   }
+
+  @Override
+  public String toString() {
+    return "R";
+  }
 }

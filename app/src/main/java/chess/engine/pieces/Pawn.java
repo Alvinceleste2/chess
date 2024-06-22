@@ -105,4 +105,9 @@ public class Pawn extends Piece {
   public Pawn clone() {
     return new Pawn(this.color, this.firstMoved);
   }
+
+  @Override
+  public String toString() {
+    return "";
+  }
 }

@@ -71,6 +71,10 @@ public class Tile extends JPanel {
       public void mouseClicked(MouseEvent e) {
         Tile tile = (Tile) e.getSource();
 
+        if (Board.getInstance().getStatus() == GameStatus.ENDED) {
+          return;
+        }
+
         if (TilesPanel.getSelectedTile() == null) {
           Square sq = Board.getInstance().getSquare(new Position(tile.x, tile.y));
           if (sq.isEmpty()) {
@@ -83,7 +87,7 @@ public class Tile extends JPanel {
 
           TilesPanel.setSelectedTile(tile);
           TilesPanel
-              .showMovements(Board.getInstance().getMovements(new Position(tile.x, tile.y)));
+              .showMovements(Board.getInstance().getLegalMovements(new Position(tile.x, tile.y)));
           tile.repaint();
 
         } else if (TilesPanel.getSelectedTile().equals(tile)) {
@@ -131,9 +135,6 @@ public class Tile extends JPanel {
               break;
 
             case GameStatus.CHECKMATE:
-              Sound.playEnd();
-              TilesPanel.setSelectedTile(null);
-              JOptionPane.showMessageDialog(null, "CHECKMATE!");
               break;
 
             default:

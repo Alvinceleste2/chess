@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.common.GameStatus;
+import chess.engine.common.Movement;
 import chess.engine.common.Player;
 import chess.engine.common.Square;
 import chess.engine.common.Timer;
@@ -15,6 +16,7 @@ import chess.engine.pieces.Pawn;
 import chess.engine.pieces.Piece;
 import chess.engine.pieces.Queen;
 import chess.engine.pieces.Rook;
+import chess.ui.info.MovementHistoryPanel;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -101,7 +103,7 @@ public class ClassicBoard extends Board {
 
   private GameStatus move(Position start, Position end, boolean simulation) {
     // Initial checks
-    if (this.status == GameStatus.CHECKMATE || this.status == GameStatus.DRAW) {
+    if (this.status == GameStatus.ENDED) {
       return GameStatus.ENDED;
     }
 
@@ -157,6 +159,9 @@ public class ClassicBoard extends Board {
       }
     }
 
+    this.movements.add(new Movement(this.getPieceAtSquare(end), start, end, ret));
+    MovementHistoryPanel.refreshMovements();
+
     return ret;
   }
 
@@ -184,12 +189,6 @@ public class ClassicBoard extends Board {
     this.delPiece(this.getPieceAtSquare(start));
   }
 
-  private void next() {
-    this.turn.getTimer().stop();
-    this.turn = this.players.get((this.players.indexOf(this.turn) + 1) % this.players.size());
-    this.turn.getTimer().resume();
-  }
-
   private GameStatus performNext() {
     this.next();
     return this.checkMate();
@@ -199,14 +198,20 @@ public class ClassicBoard extends Board {
   public ClassicBoard clone() {
     ClassicBoard cloneBoard = new ClassicBoard();
 
-    cloneBoard.turn = new Player(this.turn.getColor(), this.turn.getKing(), null);
+    King turnKing = this.turn.getKing().clone();
+    cloneBoard.turn = new Player(this.turn.getColor(), turnKing, null);
 
     for (int i = 0; i < this.maxX; i++) {
       for (int j = 0; j < this.maxY; j++) {
         Position pos = new Position(i, j);
 
         if (!this.getSquare(pos).isEmpty()) {
-          cloneBoard.addPiece(this.getPieceAtSquare(pos).clone(), pos);
+          if (this.getPieceAtSquare(pos) instanceof King
+              && this.getPieceAtSquare(pos).getColor().equals(cloneBoard.turn.getColor())) {
+            cloneBoard.addPiece(turnKing, pos);
+          } else {
+            cloneBoard.addPiece(this.getPieceAtSquare(pos).clone(), pos);
+          }
         }
       }
     }
@@ -218,7 +223,7 @@ public class ClassicBoard extends Board {
     ClassicBoard cloneBoard = (ClassicBoard) this.clone();
     cloneBoard.move(start, end, true);
 
-    return this.turn.getKing().isInCheck();
+    return cloneBoard.turn.getKing().isInCheck();
   }
 
   private GameStatus checkMate() {
@@ -236,13 +241,13 @@ public class ClassicBoard extends Board {
       }
     }
 
-    this.endGame();
+    this.killPlayer(this.turn);
 
     return GameStatus.CHECKMATE;
   }
 
   @Override
-  public List<Position> getMovements(Position position) {
+  public List<Position> getLegalMovements(Position position) {
     Piece piece = this.getPieceAtSquare(position);
     List<Position> list = new ArrayList<>(piece.moveSet());
     List<Position> toErase = new ArrayList<>();

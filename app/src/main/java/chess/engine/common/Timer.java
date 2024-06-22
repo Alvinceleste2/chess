@@ -34,10 +34,14 @@ public class Timer implements Runnable {
   @Override
   public void run() {
     while (this.seconds > this.elapsed) {
-      if (this.active) {
+      if (this.active && Board.getInstance().getStatus() != GameStatus.ENDED) {
         this.elapsed++;
         this.notification();
         System.err.println(this);
+      }
+
+      if (this.seconds == this.elapsed) {
+        break;
       }
 
       try {
@@ -47,7 +51,7 @@ public class Timer implements Runnable {
       }
     }
 
-    Board.getInstance().endGame();
+    Board.getInstance().killPlayer(Board.getInstance().getTurn());
   }
 
   @Override

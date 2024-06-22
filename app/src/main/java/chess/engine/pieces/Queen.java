@@ -203,4 +203,9 @@ public class Queen extends Piece {
   public Queen clone() {
     return new Queen(this.color);
   }
+
+  @Override
+  public String toString() {
+    return "Q";
+  }
 }
