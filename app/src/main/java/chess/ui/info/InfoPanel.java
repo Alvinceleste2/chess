@@ -15,13 +15,19 @@ public class InfoPanel extends JPanel {
     gbc.weighty = 1.0;
 
     gbc.gridy = 0;
-
+    gbc.gridheight = 1;
     this.add(new TitlePanel("Chess"), gbc);
 
-    gbc.gridy = 2;
+    gbc.gridy = 1;
+    gbc.gridheight = 5;
     this.add(new TimerPanel(), gbc);
 
-    gbc.gridy = 4;
+    gbc.gridy = 6;
+    gbc.gridheight = 4;
     this.add(new MovementHistoryPanel(), gbc);
+
+    gbc.gridy = 10;
+    gbc.gridheight = 1;
+    this.add(new ActionButtonsPanel(), gbc);
   }
 }
