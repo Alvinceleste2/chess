@@ -7,10 +7,10 @@ import javax.swing.SwingUtilities;
 
 import chess.engine.boards.Board;
 import chess.engine.boards.ClassicBoard;
-import chess.engine.common.Timer;
 import chess.engine.common.TimerConstraints;
 import chess.exceptions.InvalidThemeException;
 import chess.ui.info.InfoPanel;
+import chess.ui.menu.MenuFrame;
 import chess.ui.table.TablePanel;
 import chess.utils.Assets;
 
@@ -25,13 +25,13 @@ public class Chess {
       return;
     }
 
-    ClassicBoard board = Board.createClassicBoard();
-    board.init(new TimerConstraints(20, 0, 0));
-
     SwingUtilities.invokeLater(() -> {
       JFrame mainFrame = new JFrame();
       mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       mainFrame.setLayout(new GridBagLayout());
+
+      ClassicBoard board = Board.createClassicBoard();
+      board.init(new TimerConstraints(20, 0, 0));
 
       GridBagConstraints gbc = new GridBagConstraints();
 

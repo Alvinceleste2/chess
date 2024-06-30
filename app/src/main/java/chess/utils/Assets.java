@@ -7,8 +7,7 @@ import java.util.Set;
 import chess.exceptions.InvalidThemeException;
 
 public abstract class Assets {
-
-  private static String[] strings = { "1Bit", "casual", "classic", "gameBoy", "iceFire", "matte", "purpleGreen",
+  public static String[] strings = { "1Bit", "casual", "classic", "gameBoy", "iceFire", "matte", "purpleGreen",
       "redBlack", "redBlue", "wooden", "wooden2", "wooden3" };
   private static final Set<String> themes = new HashSet<>(Arrays.asList(strings));
 
