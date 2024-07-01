@@ -18,18 +18,14 @@ public class TimerPanel extends JPanel {
     this.setLayout(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.fill = GridBagConstraints.BOTH;
-
-    gbc.gridx = 0;
     gbc.weightx = 1.0;
 
-    this.add(new TimerBox(Board.getInstance().getPlayers().get(0).getTimer(),
-        Board.getInstance().getPlayers().get(0).getColor()), gbc);
+    for (int i = 0; i < Board.getInstance().getPlayers().size(); i++) {
+      gbc.gridy = i;
 
-    gbc.gridx = 1;
-    gbc.weightx = 1.0;
-
-    this.add(new TimerBox(Board.getInstance().getPlayers().get(1).getTimer(),
-        Board.getInstance().getPlayers().get(1).getColor()), gbc);
+      this.add(new TimerBox(Board.getInstance().getPlayers().get(i).getTimer(),
+          Board.getInstance().getPlayers().get(i).getColor()), gbc);
+    }
   }
 
   public class TimerBox extends JPanel {
