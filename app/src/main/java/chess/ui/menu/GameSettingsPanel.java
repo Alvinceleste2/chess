@@ -22,7 +22,7 @@ public class GameSettingsPanel extends JPanel {
     this.setBorder(new CompoundBorder(
         BorderFactory.createEmptyBorder(0, 0, 0, 0), BorderFactory.createTitledBorder("GameSettings")));
 
-    themeBox = new JComboBox<>(Assets.strings);
+    themeBox = new JComboBox<>(Assets.classicThemes);
 
     this.add(themeBox, gbc);
   }

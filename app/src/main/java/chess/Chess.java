@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import chess.engine.boards.Board;
+import chess.engine.boards.ChaturajiBoard;
 import chess.engine.boards.ClassicBoard;
 import chess.engine.common.TimerConstraints;
 import chess.exceptions.InvalidThemeException;
@@ -18,19 +19,12 @@ public class Chess {
   public static void main(String[] args) {
     System.out.println("Hello, World");
 
-    try {
-      Assets.buildPaths("wooden2");
-    } catch (InvalidThemeException e) {
-      System.out.println(e);
-      return;
-    }
-
     SwingUtilities.invokeLater(() -> {
       JFrame mainFrame = new JFrame();
       mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       mainFrame.setLayout(new GridBagLayout());
 
-      ClassicBoard board = Board.createClassicBoard();
+      ChaturajiBoard board = Board.createChaturajiBoard();
       board.init(new TimerConstraints(20, 0, 0));
 
       GridBagConstraints gbc = new GridBagConstraints();

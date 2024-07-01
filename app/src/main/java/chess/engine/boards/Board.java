@@ -138,4 +138,9 @@ public abstract class Board {
     boardInstance = new ClassicBoard();
     return (ClassicBoard) boardInstance;
   }
+
+  public static ChaturajiBoard createChaturajiBoard() {
+    boardInstance = new ChaturajiBoard();
+    return (ChaturajiBoard) boardInstance;
+  }
 }

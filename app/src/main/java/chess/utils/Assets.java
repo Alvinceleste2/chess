@@ -7,9 +7,11 @@ import java.util.Set;
 import chess.exceptions.InvalidThemeException;
 
 public abstract class Assets {
-  public static String[] strings = { "1Bit", "casual", "classic", "gameBoy", "iceFire", "matte", "purpleGreen",
+  public static String[] classicThemes = { "1Bit", "casual", "classic", "gameBoy", "iceFire", "matte", "purpleGreen",
       "redBlack", "redBlue", "wooden", "wooden2", "wooden3" };
-  private static final Set<String> themes = new HashSet<>(Arrays.asList(strings));
+  public static String[] staticThemes = { "chaturaji" };
+  private static final Set<String> classicThemesSet = new HashSet<>(Arrays.asList(classicThemes));
+  private static final Set<String> staticThemesSet = new HashSet<>(Arrays.asList(staticThemes));
 
   public static String piecesPath, boardPath;
   public static String blankPath = "./../assets/chessSet/blank.png";
@@ -18,7 +20,7 @@ public abstract class Assets {
   public static final int ICON_SIZE = 32;
 
   public static void buildPaths(String theme) throws InvalidThemeException {
-    if (!themes.contains(theme)) {
+    if (!classicThemesSet.contains(theme) && !staticThemesSet.contains(theme)) {
       throw new InvalidThemeException(theme);
     }
 

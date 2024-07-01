@@ -2,7 +2,11 @@ package chess.utils;
 
 public enum Color {
   WHITE("white"),
-  BLACK("black");
+  BLACK("black"),
+  RED("red"),
+  BLUE("blue"),
+  GREEN("green"),
+  YELLOW("yellow");
 
   private String string;
 
