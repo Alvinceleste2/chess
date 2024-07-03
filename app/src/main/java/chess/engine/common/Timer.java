@@ -51,7 +51,7 @@ public class Timer implements Runnable {
       }
     }
 
-    Board.getInstance().killPlayer(Board.getInstance().getTurn());
+    Board.getInstance().getTurn().getKing().die();
   }
 
   @Override

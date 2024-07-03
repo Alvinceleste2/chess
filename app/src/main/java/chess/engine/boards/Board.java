@@ -71,9 +71,10 @@ public abstract class Board {
 
   public void killPlayer(Player player) {
     this.players.remove(player);
+    this.next();
 
     if (this.players.size() < 2) {
-      this.endGame(this.players.get(0));
+      this.endGame(this.getTurn());
     }
   }
 
@@ -89,10 +90,6 @@ public abstract class Board {
     this.turn.getTimer().stop();
     this.turn = this.players.get((this.players.indexOf(this.turn) + 1) % this.players.size());
     this.turn.getTimer().resume();
-  }
-
-  public void delPlayer(Player p) {
-    this.players.remove(p);
   }
 
   // SETTERS AND GETTERS //

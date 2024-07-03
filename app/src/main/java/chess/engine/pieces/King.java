@@ -7,6 +7,7 @@ import java.util.Map;
 import chess.engine.boards.Board;
 import chess.engine.common.GameStatus;
 import chess.engine.common.Player;
+import chess.ui.table.TablePanel;
 import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -36,16 +37,14 @@ public class King extends Piece {
 
   public void die() {
     super.die();
+    this.buildDeathPath();
     for (Piece p : Board.getInstance().getPieces().get(this.color)) {
       if (!p.equals(this)) {
         p.softDie();
       }
     }
-    Board.getInstance().delPlayer(this.player);
-  }
-
-  public void kingDie() {
-
+    Board.getInstance().killPlayer(this.player);
+    TablePanel.refresh();
   }
 
   @Override
