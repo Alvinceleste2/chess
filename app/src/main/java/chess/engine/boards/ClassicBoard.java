@@ -59,6 +59,11 @@ public class ClassicBoard extends Board {
   }
 
   private void initPieces() {
+    // We initialize the pieces map
+    for (Player p : this.players) {
+      this.pieces.put(p.getColor(), new ArrayList<>());
+    }
+
     // We add the pawns
     for (int i = 0; i < maxX; i++) {
       this.addPiece(new Pawn(Color.WHITE), new Position(i, 1));
@@ -236,12 +241,10 @@ public class ClassicBoard extends Board {
       return GameStatus.NORMAL;
     }
 
-    for (Piece p : this.getPieces()) {
-      if (p.getColor().equals(this.turn.getKing().getColor())) {
-        for (Position pos : p.moveSet()) {
-          if (!this.simulateMoveEndsInCheck(p.getPosition(), pos)) {
-            return GameStatus.CHECK;
-          }
+    for (Piece p : this.getPieces().get(this.turn.getKing().getColor())) {
+      for (Position pos : p.moveSet()) {
+        if (!this.simulateMoveEndsInCheck(p.getPosition(), pos)) {
+          return GameStatus.CHECK;
         }
       }
     }

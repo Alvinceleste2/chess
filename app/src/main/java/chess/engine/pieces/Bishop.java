@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.boards.Board;
+import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -11,6 +12,10 @@ public class Bishop extends Piece {
   public Bishop(Color color) {
     super(color);
     this.imagePath += this.color + "/Bishop.png";
+  }
+
+  protected void buildDeathPath() {
+    this.imagePath = Assets.deathPath + "/Bishop.png";
   }
 
   @Override

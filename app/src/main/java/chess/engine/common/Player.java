@@ -17,6 +17,7 @@ public class Player {
     this.eaten = new ArrayList<>();
     this.color = color;
     this.king = king;
+    king.setPlayer(this);
     this.timer = timer;
   }
 

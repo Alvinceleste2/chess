@@ -1,10 +1,9 @@
 package chess.engine.boards;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
+import java.util.Map;
 import chess.engine.common.GameStatus;
 import chess.engine.common.Movement;
 import chess.engine.common.Player;
@@ -13,6 +12,7 @@ import chess.engine.common.TimerConstraints;
 import chess.engine.pieces.Piece;
 import chess.ui.table.TablePanel;
 import chess.ui.table.TilesPanel;
+import chess.utils.Color;
 import chess.utils.Position;
 import chess.utils.Sound;
 
@@ -31,14 +31,14 @@ public abstract class Board {
   // Physics variables
   public int maxX, maxY;
   protected Square[][] squares;
-  protected Set<Piece> pieces;
+  protected Map<Color, List<Piece>> pieces;
 
   // Visuals
   protected String imagePath;
 
   protected Board() {
     // Initialization of lists and sets
-    this.pieces = new HashSet<>();
+    this.pieces = new HashMap<>();
     this.players = new ArrayList<>();
     this.movements = new ArrayList<>();
 
@@ -91,17 +91,21 @@ public abstract class Board {
     this.turn.getTimer().resume();
   }
 
+  public void delPlayer(Player p) {
+    this.players.remove(p);
+  }
+
   // SETTERS AND GETTERS //
 
   public void addPiece(Piece piece, Position position) {
     this.squares[position.x][position.y].setPiece(piece);
-    this.pieces.add(piece);
+    this.pieces.get(piece.getColor()).add(piece);
     piece.setBoard(this);
   }
 
   public void delPiece(Piece piece) {
     this.getSquare(piece.getPosition()).setEmpty();
-    this.pieces.remove(piece);
+    this.pieces.get(piece.getColor()).remove(piece);
   }
 
   public Piece getPieceAtSquare(Position position) {
@@ -112,7 +116,7 @@ public abstract class Board {
     return this.squares[position.x][position.y];
   }
 
-  public Set<Piece> getPieces() {
+  public Map<Color, List<Piece>> getPieces() {
     return this.pieces;
   }
 

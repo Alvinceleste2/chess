@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.engine.boards.Board;
+import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -19,6 +20,10 @@ public class Rook extends Piece {
 
   public Rook(Color color) {
     this(color, false);
+  }
+
+  protected void buildDeathPath() {
+    this.imagePath = Assets.deathPath + "/Rook.png";
   }
 
   @Override

@@ -2,15 +2,19 @@ package chess.engine.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import chess.engine.boards.Board;
 import chess.engine.common.GameStatus;
+import chess.engine.common.Player;
+import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
 
 public class King extends Piece {
 
   private boolean firstMoved;
+  private Player player;
 
   public King(Color color, boolean firstMoved) {
     super(color);
@@ -20,6 +24,28 @@ public class King extends Piece {
 
   public King(Color color) {
     this(color, false);
+  }
+
+  protected void buildDeathPath() {
+    this.imagePath = Assets.deathPath + "/King.png";
+  }
+
+  public void setPlayer(Player player) {
+    this.player = player;
+  }
+
+  public void die() {
+    super.die();
+    for (Piece p : Board.getInstance().getPieces().get(this.color)) {
+      if (!p.equals(this)) {
+        p.softDie();
+      }
+    }
+    Board.getInstance().delPlayer(this.player);
+  }
+
+  public void kingDie() {
+
   }
 
   @Override
@@ -47,7 +73,6 @@ public class King extends Piece {
     }
 
     Rook r = (Rook) piece;
-    double posX = Math.ceil((this.getPosition().x + r.getPosition().x) / 2);
 
     if (r.getFirstMoved() || this.firstMoved) {
       return false;
@@ -171,18 +196,24 @@ public class King extends Piece {
     // The King can only move where there is no danger
     List<Position> posToErase = new ArrayList<>();
 
-    for (Piece p : this.board.getPieces()) {
-      if (p.color != this.color) {
-        if (p instanceof King) {
-          King k = (King) p;
-          posToErase.addAll(k.getMovements());
+    for (Map.Entry<Color, List<Piece>> entry : this.board.getPieces().entrySet()) {
+      if (entry.getKey().equals(this.color)) {
+        continue;
+      } else {
+        for (Piece p : entry.getValue()) {
+          if (p.color != this.color) {
+            if (p instanceof King) {
+              King k = (King) p;
+              posToErase.addAll(k.getMovements());
 
-        } else if (p instanceof Pawn) {
-          Pawn pa = (Pawn) p;
-          posToErase.addAll(pa.getAttack());
+            } else if (p instanceof Pawn) {
+              Pawn pa = (Pawn) p;
+              posToErase.addAll(pa.getAttack());
 
-        } else {
-          posToErase.addAll(p.moveSet());
+            } else {
+              posToErase.addAll(p.moveSet());
+            }
+          }
         }
       }
     }

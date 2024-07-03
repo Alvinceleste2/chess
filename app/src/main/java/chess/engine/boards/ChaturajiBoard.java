@@ -1,8 +1,12 @@
 package chess.engine.boards;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import chess.engine.common.GameStatus;
+import chess.engine.common.Movement;
 import chess.engine.common.Player;
 import chess.engine.common.Square;
 import chess.engine.common.Timer;
@@ -13,6 +17,7 @@ import chess.engine.pieces.Knight;
 import chess.engine.pieces.Pawn;
 import chess.engine.pieces.Rook;
 import chess.exceptions.InvalidThemeException;
+import chess.ui.info.MovementHistoryPanel;
 import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
@@ -70,6 +75,11 @@ public class ChaturajiBoard extends Board {
   }
 
   private void initPieces() {
+    // We initialize the pieces map
+    for (Player p : this.players) {
+      this.pieces.put(p.getColor(), new ArrayList<>());
+    }
+
     // Red pieces
     for (int i = 0; i < 4; i++) {
       this.addPiece(new Pawn(Color.RED), new Position(i, 1));
@@ -113,14 +123,55 @@ public class ChaturajiBoard extends Board {
 
   @Override
   public GameStatus move(Position start, Position end) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'move'");
+    // Initial checks
+    if (this.status == GameStatus.ENDED) {
+      return GameStatus.ENDED;
+    }
+
+    if (this.getSquare(start).isEmpty() || !this.isInTurn(this.getPieceAtSquare(start))) {
+      return GameStatus.ILLEGAL;
+    }
+
+    GameStatus ret = this.getPieceAtSquare(start).isValidMove(end);
+
+    if (ret == GameStatus.ILLEGAL) {
+      return GameStatus.ILLEGAL;
+    }
+
+    switch (ret) {
+      case GameStatus.NORMAL:
+        this.performMove(start, end);
+        break;
+
+      case GameStatus.CAPTURE:
+        this.performMove(start, end);
+        break;
+
+      default:
+        break;
+    }
+
+    this.performNext();
+
+    this.movements
+        .add(new Movement(this.getPieceAtSquare(end), start, end, Collections.singletonList(GameStatus.NORMAL)));
+    MovementHistoryPanel.refreshMovements();
+
+    return ret;
+  }
+
+  private void performMove(Position start, Position end) {
+    this.getSquare(end).setPiece(this.getPieceAtSquare(start));
+    this.getSquare(start).setEmpty();
+    this.getPieceAtSquare(end).constraintsRefresh();
+  }
+
+  private void performNext() {
+    this.next();
   }
 
   @Override
   public List<Position> getLegalMovements(Position position) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getLegalMovements'");
+    return this.getPieceAtSquare(position).moveSet();
   }
-
 }

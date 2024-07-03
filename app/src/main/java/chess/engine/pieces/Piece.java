@@ -21,8 +21,16 @@ public abstract class Piece {
 
   public void die() {
     this.dead = true;
-    this.board.getPieces().remove(this);
+    this.board.getPieces().get(this.color).remove(this);
+    this.imagePath = Assets.deathPath;
   }
+
+  public void softDie() {
+    this.dead = true;
+    this.buildDeathPath();
+  }
+
+  protected abstract void buildDeathPath();
 
   public Position getPosition() {
     for (int i = 0; i < Board.getInstance().maxX; i++) {

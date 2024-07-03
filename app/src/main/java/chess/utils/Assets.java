@@ -15,6 +15,7 @@ public abstract class Assets {
 
   public static String piecesPath, boardPath;
   public static String blankPath = "./../assets/chessSet/blank.png";
+  public static String deathPath = "./../assets/chessSet/matte/pieces/black/";
 
   public static final int BOARD_SIZE = 288;
   public static final int ICON_SIZE = 32;

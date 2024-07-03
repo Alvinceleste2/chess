@@ -5,6 +5,7 @@ import java.util.List;
 
 import chess.engine.boards.Board;
 import chess.engine.common.GameStatus;
+import chess.utils.Assets;
 import chess.utils.Color;
 import chess.utils.Position;
 
@@ -19,6 +20,10 @@ public class Pawn extends Piece {
 
   public Pawn(Color color) {
     this(color, false);
+  }
+
+  protected void buildDeathPath() {
+    this.imagePath = Assets.deathPath + "/Pawn.png";
   }
 
   @Override
