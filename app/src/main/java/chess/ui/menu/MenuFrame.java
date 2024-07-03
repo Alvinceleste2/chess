@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class MenuFrame extends JFrame {
   public MenuFrame() {

@@ -2,18 +2,15 @@ package chess;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import chess.engine.boards.Board;
 import chess.engine.boards.ChaturajiBoard;
-import chess.engine.boards.ClassicBoard;
 import chess.engine.common.TimerConstraints;
-import chess.exceptions.InvalidThemeException;
 import chess.ui.info.InfoPanel;
-import chess.ui.menu.MenuFrame;
 import chess.ui.table.TablePanel;
-import chess.utils.Assets;
 
 public class Chess {
   public static void main(String[] args) {
