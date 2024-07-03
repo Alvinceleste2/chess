@@ -50,12 +50,12 @@ public class Pawn extends Piece {
 
     // Check forward movements
 
-    Position posF = new Position(this.getPosition().x, this.color.add(this.getPosition().y, 1));
+    Position posF = this.forward(1);
     if (posF.isValidPosition() && board.getPieceAtSquare(posF) == null) {
       list.add(posF);
 
       if (this.firstMoved == false) {
-        Position posFF = new Position(this.getPosition().x, this.color.add(this.getPosition().y, 2));
+        Position posFF = this.forward(2);
         if (posFF.isValidPosition() && board.getPieceAtSquare(posFF) == null) {
           list.add(posFF);
         }
@@ -64,13 +64,13 @@ public class Pawn extends Piece {
 
     // Check diagonal movements
 
-    Position posFL = new Position(this.color.add(this.getPosition().x, -1), this.color.add(this.getPosition().y, 1));
+    Position posFL = this.forwardLeft();
     if (posFL.isValidPosition() && board.getPieceAtSquare(posFL) != null
         && board.getPieceAtSquare(posFL).color != this.color) {
       list.add(posFL);
     }
 
-    Position posFR = new Position(this.color.add(this.getPosition().x, 1), this.color.add(this.getPosition().y, 1));
+    Position posFR = this.forwardRight();
     if (posFR.isValidPosition() && board.getPieceAtSquare(posFR) != null
         && board.getPieceAtSquare(posFR).color != this.color) {
       list.add(posFR);
@@ -82,14 +82,12 @@ public class Pawn extends Piece {
   public List<Position> getAttack() {
     List<Position> attackPos = new ArrayList<>();
 
-    Position posFL = new Position(this.color.add(this.getPosition().x, -1),
-        this.color.add(this.getPosition().y, 1));
+    Position posFL = this.forwardLeft();
     if (posFL.isValidPosition()) {
       attackPos.add(posFL);
     }
 
-    Position posFR = new Position(this.color.add(this.getPosition().x, 1),
-        this.color.add(this.getPosition().y, 1));
+    Position posFR = this.forwardRight();
     if (posFR.isValidPosition()) {
       attackPos.add(posFR);
     }
@@ -98,11 +96,75 @@ public class Pawn extends Piece {
   }
 
   private boolean checkPromote() {
-    switch (this.color) {
-      case Color.WHITE:
-        return this.getPosition().y == Board.getInstance().maxY - 2;
+    switch (this.getColor()) {
+      case WHITE:
+        return this.getPosition().y >= Board.getInstance().maxY - 2;
+
+      case BLACK:
+        return this.getPosition().y <= 1;
+
+      case RED:
+        return this.getPosition().y >= Board.getInstance().maxY - 2;
+
+      case BLUE:
+        return this.getPosition().x >= Board.getInstance().maxX - 2;
+
+      case YELLOW:
+        return this.getPosition().y <= 1;
+
       default:
-        return this.getPosition().y == 1;
+        return this.getPosition().x <= 1;
+    }
+  }
+
+  private Position forward(int num) {
+    switch (this.color) {
+      case WHITE:
+        return new Position(this.getPosition().x, this.getPosition().y + num);
+      case BLACK:
+        return new Position(this.getPosition().x, this.getPosition().y - num);
+      case RED:
+        return new Position(this.getPosition().x, this.getPosition().y + num);
+      case BLUE:
+        return new Position(this.getPosition().x + num, this.getPosition().y);
+      case YELLOW:
+        return new Position(this.getPosition().x, this.getPosition().y - num);
+      default:
+        return new Position(this.getPosition().x - num, this.getPosition().y);
+    }
+  }
+
+  private Position forwardLeft() {
+    switch (this.color) {
+      case WHITE:
+        return new Position(this.getPosition().x - 1, this.getPosition().y + 1);
+      case BLACK:
+        return new Position(this.getPosition().x + 1, this.getPosition().y - 1);
+      case RED:
+        return new Position(this.getPosition().x - 1, this.getPosition().y + 1);
+      case BLUE:
+        return new Position(this.getPosition().x + 1, this.getPosition().y + 1);
+      case YELLOW:
+        return new Position(this.getPosition().x + 1, this.getPosition().y - 1);
+      default:
+        return new Position(this.getPosition().x - 1, this.getPosition().y - 1);
+    }
+  }
+
+  private Position forwardRight() {
+    switch (this.color) {
+      case WHITE:
+        return new Position(this.getPosition().x + 1, this.getPosition().y + 1);
+      case BLACK:
+        return new Position(this.getPosition().x - 1, this.getPosition().y - 1);
+      case RED:
+        return new Position(this.getPosition().x + 1, this.getPosition().y + 1);
+      case BLUE:
+        return new Position(this.getPosition().x + 1, this.getPosition().y - 1);
+      case YELLOW:
+        return new Position(this.getPosition().x - 1, this.getPosition().y - 1);
+      default:
+        return new Position(this.getPosition().x - 1, this.getPosition().y + 1);
     }
   }
 

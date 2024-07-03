@@ -15,6 +15,7 @@ import chess.engine.pieces.Bishop;
 import chess.engine.pieces.King;
 import chess.engine.pieces.Knight;
 import chess.engine.pieces.Pawn;
+import chess.engine.pieces.Queen;
 import chess.engine.pieces.Rook;
 import chess.exceptions.InvalidThemeException;
 import chess.ui.info.MovementHistoryPanel;
@@ -147,6 +148,10 @@ public class ChaturajiBoard extends Board {
         this.performMove(start, end);
         break;
 
+      case GameStatus.PROMOTION:
+        this.promote(start, end);
+        break;
+
       default:
         break;
     }
@@ -164,6 +169,11 @@ public class ChaturajiBoard extends Board {
     this.getSquare(end).setPiece(this.getPieceAtSquare(start));
     this.getSquare(start).setEmpty();
     this.getPieceAtSquare(end).constraintsRefresh();
+  }
+
+  private void promote(Position start, Position end) {
+    this.addPiece(new Queen(this.getPieceAtSquare(start).getColor()), end);
+    this.delPiece(this.getPieceAtSquare(start));
   }
 
   private void performNext() {

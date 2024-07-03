@@ -32,4 +32,16 @@ public class Position {
         ? false
         : true;
   }
+
+  public Position clone() {
+    return new Position(this.x, this.y);
+  }
+
+  public void XAxis(int num) {
+    this.x += num;
+  }
+
+  public void YAxis(int num) {
+    this.y += num;
+  }
 }

@@ -5,8 +5,8 @@ public enum Color {
   BLACK("black"),
   RED("red"),
   BLUE("blue"),
-  GREEN("green"),
-  YELLOW("yellow");
+  YELLOW("yellow"),
+  GREEN("green");
 
   private String string;
 
@@ -17,14 +17,5 @@ public enum Color {
   @Override
   public String toString() {
     return this.string;
-  }
-
-  public int add(int num, int count) {
-    switch (this) {
-      case WHITE:
-        return num + count;
-      default:
-        return num - count;
-    }
   }
 }
