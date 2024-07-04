@@ -44,8 +44,8 @@ public class TimerPanel extends JPanel {
       this.add(timeLabel);
     }
 
-    public void update() {
-      this.timeLabel.setText(this.timer.toString());
+    public void update(boolean on) {
+      this.timeLabel.setText(this.timer.toString() + ((on) ? " ·" : ""));
     }
   }
 }

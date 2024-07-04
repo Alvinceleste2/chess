@@ -36,7 +36,7 @@ public class Timer implements Runnable {
     while (this.seconds > this.elapsed) {
       if (this.active && Board.getInstance().getStatus() != GameStatus.ENDED) {
         this.elapsed++;
-        this.notification();
+        this.notification(true);
         System.err.println(this);
       }
 
@@ -74,17 +74,16 @@ public class Timer implements Runnable {
         break;
     }
 
-    this.notification();
-    System.err.println(this.active ? "Timer resumed" : "Timer stopped");
+    this.notification(false);
   }
 
   public void resume() {
     this.active = true;
   }
 
-  private void notification() {
+  private void notification(boolean on) {
     if (this.observer != null) {
-      this.observer.update();
+      this.observer.update(on);
     }
   }
 }
