@@ -72,6 +72,7 @@ public class TablePanel extends JPanel {
   }
 
   public static void showVictoryWin(Player winner) {
+    TilesPanel.refresh();
     JOptionPane.showMessageDialog(null, winner.getColor() + " player wins!");
   }
 }

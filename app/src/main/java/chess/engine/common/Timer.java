@@ -51,6 +51,7 @@ public class Timer implements Runnable {
       }
     }
 
+    Board.getInstance().next();
     Board.getInstance().getTurn().getKing().die();
   }
 

@@ -43,8 +43,8 @@ public class King extends Piece {
         p.softDie();
       }
     }
+
     Board.getInstance().killPlayer(this.player);
-    TablePanel.refresh();
   }
 
   @Override

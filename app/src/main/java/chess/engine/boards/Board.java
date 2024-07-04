@@ -71,7 +71,7 @@ public abstract class Board {
 
   public void killPlayer(Player player) {
     this.players.remove(player);
-    this.next();
+    TablePanel.refresh();
 
     if (this.players.size() < 2) {
       this.endGame(this.getTurn());
@@ -82,11 +82,10 @@ public abstract class Board {
     this.status = GameStatus.ENDED;
     Sound.playEnd();
     TilesPanel.setSelectedTile(null);
-    TilesPanel.refresh();
     TablePanel.showVictoryWin(winner);
   }
 
-  protected void next() {
+  public void next() {
     this.turn.getTimer().stop();
     this.turn = this.players.get((this.players.indexOf(this.turn) + 1) % this.players.size());
     this.turn.getTimer().resume();

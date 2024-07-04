@@ -155,7 +155,7 @@ public class ChaturajiBoard extends Board {
         break;
     }
 
-    this.performNext();
+    this.next();
 
     this.movements
         .add(new Movement(this.getPieceAtSquare(end), start, end, Collections.singletonList(GameStatus.NORMAL)));
@@ -173,10 +173,6 @@ public class ChaturajiBoard extends Board {
   private void promote(Position start, Position end) {
     this.addPiece(new Queen(this.getPieceAtSquare(start).getColor()), end);
     this.delPiece(this.getPieceAtSquare(start));
-  }
-
-  private void performNext() {
-    this.next();
   }
 
   @Override
